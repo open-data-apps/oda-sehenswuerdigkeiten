@@ -1,0 +1,91 @@
+{
+  "$schema": "https://frictionlessdata.io/schemas/table-schema.json",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "description": "Eindeutige URI oder Kennung des POIs im DZT Knowledge Graph"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Bezeichnung der Sehenswürdigkeit oder Attraktion"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "description": "Schema.org / ODTA Typ (z. B. TouristAttraction, Museum, Playground)"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "Ausführliche Beschreibung des Ausflugsziels"
+    },
+    {
+      "name": "latitude",
+      "type": "number",
+      "description": "Geografischer Breitengrad (WGS84)"
+    },
+    {
+      "name": "longitude",
+      "type": "number",
+      "description": "Geografischer Längengrad (WGS84)"
+    },
+    {
+      "name": "street",
+      "type": "string",
+      "description": "Straße und Hausnummer"
+    },
+    {
+      "name": "postalCode",
+      "type": "string",
+      "description": "Postleitzahl"
+    },
+    {
+      "name": "city",
+      "type": "string",
+      "description": "Gemeinde / Stadt"
+    },
+    {
+      "name": "distanceKm",
+      "type": "number",
+      "description": "Berechnete Luftlinien-Entfernung zum Instanz-Zentrum in Kilometern"
+    },
+    {
+      "name": "isKidsFriendly",
+      "type": "boolean",
+      "description": "Kennzeichen: Für Kinder und Familien besonders geeignet"
+    },
+    {
+      "name": "weatherType",
+      "type": "string",
+      "description": "Klassifikation: indoor (wetterfest), outdoor (Freiluft) oder hybrid"
+    },
+    {
+      "name": "isFree",
+      "type": "boolean",
+      "description": "Kennzeichen: Kostenloser Eintritt / frei zugänglich"
+    },
+    {
+      "name": "isOutlet",
+      "type": "boolean",
+      "description": "Kennzeichen: Outlet Store, Werksverkauf oder Shopping Center"
+    },
+    {
+      "name": "isCulinary",
+      "type": "boolean",
+      "description": "Kennzeichen: Regionale Kulinarik, Brauerei oder Weingut"
+    },
+    {
+      "name": "imageUrl",
+      "type": "string",
+      "format": "uri",
+      "description": "URL zum Vorschaubild"
+    },
+    {
+      "name": "license",
+      "type": "string",
+      "description": "Open Data Lizenz (z. B. CC BY 4.0, CC0)"
+    }
+  ]
+}

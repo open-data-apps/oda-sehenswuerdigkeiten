@@ -1,0 +1,245 @@
+[
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/ae4b9f2b-4204-4c2c-bba7-4e36b03bf741",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Torfelsen Meßstetten",
+    "schema:description": "Eindrucksvoller Aussichtspunkt zwischen Meßstetten und Albstadt-Lautlingen. Vom Torfelsen, der von den Einheimischen auch Schaufelsen genannt wird, hat man einen wunderschönen Panoramablick über das Eyachtal.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.20132",
+      "schema:longitude": "8.966782"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Buchhaldenweg",
+      "schema:addressLocality": "Meßstetten",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72459"
+    },
+    "schema:isAccessibleForFree": true,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Zollernalb-Touristinfo",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/b6ad62da-7bf0-4a36-a092-4b3062f32ca3",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/TouristAttraction",
+      "https://odta.io/voc/Infrastructure"
+    ],
+    "schema:name": "Kreuzfelsen Burladingen",
+    "schema:description": "Markanter Felsen direkt über Burladingen mit herrlichem Blick ins Fehlatal. Vom Aussichtspunkt Kreuzfelsen hat man einen weiten Panoramablick auf die Schwäbische Alb.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.2951",
+      "schema:longitude": "9.1085"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Kreuzfelsenweg",
+      "schema:addressLocality": "Burladingen",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72393"
+    },
+    "schema:isAccessibleForFree": true,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Stadt Burladingen",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/fa35432a-4437-11ef-8f26-00163e2945d0",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/Playground",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Abenteuerspielplatz & Wichtelpfad Burladingen",
+    "schema:description": "Ein idyllisch gelegener Mehrgenerationen-Spielplatz mit Schaukeln, Klettertürmen, Sandbereich und einem anschließenden 2,5 km langen Wichtelpfad mit Rätselstationen für Kinder und Familien.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.2885",
+      "schema:longitude": "9.1190"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Am Sportplatz 4",
+      "schema:addressLocality": "Burladingen",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72393"
+    },
+    "schema:isAccessibleForFree": true,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Gemeinde Burladingen",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/burg-hohenzollern-dzt",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/Castle",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Burg Hohenzollern",
+    "schema:description": "Der Stammsitz des preußischen Königshauses und der Fürsten von Hohenzollern. Die imposante Burganlage bietet prunkvolle Säle, eine Schatzkammer mit der preußischen Königskrone und spektakuläre Ausblicke über die Schwäbische Alb.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.3235",
+      "schema:longitude": "8.9674"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Burg Hohenzollern 1",
+      "schema:addressLocality": "Hechingen",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72379"
+    },
+    "schema:isAccessibleForFree": false,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Burg Hohenzollern GbR",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "schema:openingHoursSpecification": {
+      "@type": "https://schema.org/OpeningHoursSpecification",
+      "schema:dayOfWeek": [
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "schema:opens": "10:00",
+      "schema:closes": "17:30"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/schauhoehle-nebelhoehle-dzt",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/Landform",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Schauhöhle Nebelhöhle",
+    "schema:description": "Eine der ältesten und bekanntesten Tropfsteinhöhlen Deutschlands. Auf 380 Metern Schauweg bestaunen Besucher faszinierende Stalaktiten und Stalagmiten. Ganzjährig konstante 8–10 °C – ideal als kühler Rückzugsort an heißen Sommertagen oder bei Regen.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.4182",
+      "schema:longitude": "9.2198"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Nebelhöhlenweg 1",
+      "schema:addressLocality": "Sonnenbühl",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72820"
+    },
+    "schema:isAccessibleForFree": false,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Gemeinde Sonnenbühl",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/museum-waeschefabrik-dzt",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/Museum",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Deutsches Peitschenmuseum & Heimatmuseum Burladingen",
+    "schema:description": "Weltweit einzigartiges Spezialmuseum über die traditionelle Peitschenmacher-Kunst auf der Schwäbischen Alb sowie stadtgeschichtliche Textil- und Handwerksausstellung in einem liebevoll restaurierten historischen Gebäude.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.2910",
+      "schema:longitude": "9.1130"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Hauptstraße 49",
+      "schema:addressLocality": "Burladingen",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72393"
+    },
+    "schema:isAccessibleForFree": true,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Heimatverein Burladingen",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/kornbuehl-salmendingen-dzt",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Naturschutzgebiet Kornbühl & Salmendinger Kapelle",
+    "schema:description": "Landschaftsprägende Bergkuppe mit artenreichen Wacholderheiden. Auf dem Gipfel thront die weithin sichtbare St.-Anna-Kapelle aus dem 16. Jahrhundert. Beliebtes Ausflugsziel mit Rundblick über die Schwäbische Alb.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.3512",
+      "schema:longitude": "9.1234"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Ernst-Vogel-Weg",
+      "schema:addressLocality": "Burladingen-Salmendingen",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72393"
+    },
+    "schema:isAccessibleForFree": true,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Stadt Burladingen",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "@id": "https://mein.toubiz.de/api/v1/article/badkap-albstadt-dzt",
+    "@type": [
+      "https://schema.org/Place",
+      "https://schema.org/CivicStructure",
+      "https://schema.org/TouristAttraction"
+    ],
+    "schema:name": "Badkap Erlebnisbad & Wellness-Oase",
+    "schema:description": "Großes Freizeit- und Erlebnisbad mit Wellenbecken, Rutschenpark 'Black Hole' und Reifenrutsche, Kleinkinderbereich, weitläufiger Saunalandschaft und Thermalbecken. Perfekter wetterfester Familienausflug.",
+    "schema:geo": {
+      "@type": "https://schema.org/GeoCoordinates",
+      "schema:latitude": "48.2045",
+      "schema:longitude": "9.0210"
+    },
+    "schema:address": {
+      "@type": "schema:PostalAddress",
+      "schema:streetAddress": "Badkapstraße 1",
+      "schema:addressLocality": "Albstadt",
+      "schema:addressRegion": "Baden-Württemberg",
+      "schema:postalCode": "72458"
+    },
+    "schema:isAccessibleForFree": false,
+    "schema:image": {
+      "@type": "schema:ImageObject",
+      "schema:contentUrl": "https://images.unsplash.com/photo-1584466977773-e625c37cdd50?auto=format&fit=crop&w=800&q=80",
+      "schema:copyrightNotice": "Badkap Albstadt",
+      "schema:license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  }
+]

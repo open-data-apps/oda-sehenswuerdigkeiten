@@ -1,0 +1,422 @@
+{
+  "app-entwickler-id": "12343",
+  "app-entwickler-name": "ondics-gmbh",
+  "name-in-url": "sehenswuerdigkeiten",
+  "name": "Sehenswürdigkeiten",
+  "app-version": "1.7.2",
+  "app-package-version": "2",
+  "odas-app-icon": "assets/odas-app-icon.svg",
+  "app-icon": "assets/odas-app-icon.svg",
+  "kurzbeschreibung": "Entdecken Sie Sehenswürdigkeiten, Naturhighlights, familienfreundliche Ausflugsziele, Outlets und Genussorte in Burladingen und unserer Region aus dem DZT Knowledge Graph.",
+  "beschreibung": [
+    "_multiline_",
+    "Herzlich willkommen in Burladingen! Mit unserer **Sehenswürdigkeiten-App** laden wir Bürgerinnen, Bürger und Gäste ein, die reiche Geschichte, Natur und Ausflugsziele unserer Stadt und unserer zehn Stadtteile im Fehlatal und auf der Schwäbischen Alb zu entdecken.",
+    "",
+    "Unsere Anwendung bereitet die offenen Daten des Knowledge Graph der Deutschen Zentrale für Tourismus (DZT) direkt für Burladingen und unsere Region auf – übersichtlich auf einer interaktiven Karte und in einer filterbaren Übersicht.",
+    "",
+    "## Was bietet unsere App?",
+    "",
+    "- **Kultur & Geschichte:** Historische Kirchen, Baudenkmäler, Museen und Schlösser der Region",
+    "- **Natur & Alb-Landschaft:** Aussichtsfelsen, Höhlen und Wanderziele im Fehla- und Laucherttal",
+    "- **Für Familien:** Spielplätze, Freizeiteinrichtungen und kinderfreundliche Ausflugsziele",
+    "- **Wetterfeste Angebote:** Hallenbäder, Museen und Indoor-Ziele für jedes Wetter",
+    "- **Werksverkäufe & Genuss:** Regionale Outlets (Textiltradition auf der Alb) sowie Brauereien und Gastronomie",
+    "",
+    "## Datenquelle",
+    "",
+    "- **Open Data Portal:** [{{odp.name}}]({{odp.url}})",
+    "- **Datensatz:** [DZT Knowledge Graph (POIs)](https://open-data-germany.org/)",
+    "- **Ressource:** [DZT SPARQL-Endpunkt](https://proxy.opendatagermany.io/api/ts/v1/kg/sparql)",
+    "",
+    "## Open Data App",
+    "",
+    "Diese Anwendung basiert auf offenen Schnittstellen und ist Teil des Open Data App Stores.",
+    "",
+    "- [Open Data App Store](https://open-data-app-store.de/) – die Plattform für Open Data Apps",
+    "- [Repository dieser App](https://github.com/open-data-apps/oda-app-sehenswuerdigkeiten) – Quellcode und Dokumentation"
+  ],
+  "screenshots": [
+    "assets/Desktop_Screenshot.png",
+    "assets/Mobile_Screenshot.png",
+    "assets/Catalog_Screenshot.png"
+  ],
+  "tags-funktion": [
+    "Karte",
+    "Suche",
+    "Filter",
+    "Export"
+  ],
+  "tags-dateityp": [
+    "JSON",
+    "JSON-LD"
+  ],
+  "tags-datenart": [
+    "Tourismus",
+    "Geodaten",
+    "Kultur",
+    "Freizeit"
+  ],
+  "daten": {
+    "beschreibung": "ODTA-konforme Sehenswürdigkeiten und Ausflugsziele (schema:TouristAttraction, schema:Museum, schema:Winery) aus dem DZT Knowledge Graph. Suche per SPARQL-Geo-Umkreisabfrage.",
+    "schema": "assets/schema.json",
+    "beispiel": "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql",
+    "beispiel-url": "https://open-data-germany.org/"
+  },
+  "branding-css": "",
+  "api-version": "1",
+  "instanz-config": {
+    "seitentitel": {
+      "label": "Seitentitel",
+      "category": "allgemein",
+      "format": {
+        "typ": "string",
+        "laenge": 60
+      },
+      "default": "Sehenswürdigkeiten",
+      "hilfe": "Titel im Kopfbereich der Seite.",
+      "erforderlich": "ja"
+    },
+    "titel": {
+      "label": "App-Titel",
+      "category": "allgemein",
+      "format": {
+        "typ": "string",
+        "laenge": 60
+      },
+      "default": "Sehenswürdigkeiten",
+      "hilfe": "Hauptüberschrift in der Anwendungsansicht.",
+      "erforderlich": "ja"
+    },
+    "icon": {
+      "label": "App-Icon",
+      "category": "allgemein",
+      "format": {
+        "typ": "image"
+      },
+      "default": "assets/odas-app-icon.svg",
+      "hilfe": "Icon-Pfad der App im Header.",
+      "erforderlich": "ja"
+    },
+    "sprache": {
+      "label": "Sprache der App",
+      "category": "allgemein",
+      "format": {
+        "typ": "dropdown",
+        "optionen": [
+          "de"
+        ]
+      },
+      "default": "de",
+      "hilfe": "Angabe der App-Sprache.",
+      "erforderlich": "ja"
+    },
+    "standardSprache": {
+      "label": "Anzeigesprache für mehrsprachige Felder",
+      "category": "allgemein",
+      "format": {
+        "typ": "dropdown",
+        "optionen": [
+          "de",
+          "en"
+        ]
+      },
+      "default": "de",
+      "hilfe": "Sprache, die für mehrsprachige Felder (Name, Beschreibung) bevorzugt angezeigt wird, falls verfügbar.",
+      "erforderlich": "ja"
+    },
+    "bannerTitel": {
+      "label": "Banner-Titel",
+      "category": "allgemein",
+      "format": {
+        "typ": "string",
+        "laenge": 100
+      },
+      "default": "Sehenswürdigkeiten Burladingen",
+      "hilfe": "Titel im schwebenden Banner über der Karte (z. B. 'Sehenswürdigkeiten Burladingen').",
+      "erforderlich": "nein"
+    },
+    "bannerUntertitel": {
+      "label": "Banner-Untertitel",
+      "category": "allgemein",
+      "format": {
+        "typ": "string",
+        "laenge": 150
+      },
+      "default": "Ausflugsziele & Highlights in unserer Region",
+      "hilfe": "Untertitel im schwebenden Banner über der Karte.",
+      "erforderlich": "nein"
+    },
+    "beschreibung": {
+      "label": "Beschreibungstext",
+      "category": "beschreibung",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": [
+        "_multiline_",
+        "Herzlich willkommen in Burladingen! Mit unserer **Sehenswürdigkeiten-App** laden wir Bürgerinnen, Bürger und Gäste ein, die reiche Geschichte, Natur und Ausflugsziele unserer Stadt und unserer zehn Stadtteile im Fehlatal und auf der Schwäbischen Alb zu entdecken.",
+        "",
+        "Unsere Anwendung bereitet die offenen Daten des Knowledge Graph der Deutschen Zentrale für Tourismus (DZT) direkt für Burladingen und unsere Region auf – übersichtlich auf einer interaktiven Karte und in einer filterbaren Übersicht.",
+        "",
+        "## Was bietet unsere App?",
+        "",
+        "- **Kultur & Geschichte:** Historische Kirchen, Baudenkmäler, Museen und Schlösser der Region",
+        "- **Natur & Alb-Landschaft:** Aussichtsfelsen, Höhlen und Wanderziele im Fehla- und Laucherttal",
+        "- **Für Familien:** Spielplätze, Freizeiteinrichtungen und kinderfreundliche Ausflugsziele",
+        "- **Wetterfeste Angebote:** Hallenbäder, Museen und Indoor-Ziele für jedes Wetter",
+        "- **Werksverkäufe & Genuss:** Regionale Outlets (Textiltradition auf der Alb) sowie Brauereien und Gastronomie",
+        "",
+        "## Datenquelle",
+        "",
+        "- **Open Data Portal:** [{{odp.name}}]({{odp.url}})",
+        "- **Datensatz:** [DZT Knowledge Graph (POIs)](https://open-data-germany.org/)",
+        "- **Ressource:** [DZT SPARQL-Endpunkt](https://proxy.opendatagermany.io/api/ts/v1/kg/sparql)",
+        "",
+        "## Open Data App",
+        "",
+        "Diese Anwendung basiert auf offenen Schnittstellen und ist Teil des Open Data App Stores.",
+        "",
+        "- [Open Data App Store](https://open-data-app-store.de/) – die Plattform für Open Data Apps",
+        "- [Repository dieser App](https://github.com/open-data-apps/oda-app-sehenswuerdigkeiten) – Quellcode und Dokumentation"
+      ],
+      "erforderlich": "ja"
+    },
+    "kpiKontext1": {
+      "label": "Erläuterung KPI 1 (Alle)",
+      "category": "beschreibung",
+      "format": {
+        "typ": "string",
+        "laenge": 255
+      },
+      "default": "Gesamtzahl der im ausgewählten Umkreis gefundenen Sehenswürdigkeiten.",
+      "erforderlich": "nein"
+    },
+    "kpiKontext2": {
+      "label": "Erläuterung KPI 2 (Kinder)",
+      "category": "beschreibung",
+      "format": {
+        "typ": "string",
+        "laenge": 255
+      },
+      "default": "Ausflugsziele, die besonders für Kinder und Familien geeignet sind.",
+      "erforderlich": "nein"
+    },
+    "kpiKontext3": {
+      "label": "Erläuterung KPI 3 (Indoor)",
+      "category": "beschreibung",
+      "format": {
+        "typ": "string",
+        "laenge": 255
+      },
+      "default": "Wettergeschützte Ziele – ideal für Regentage oder Hitzeschutz.",
+      "erforderlich": "nein"
+    },
+    "kpiKontext4": {
+      "label": "Erläuterung KPI 4 (Kostenlos)",
+      "category": "beschreibung",
+      "format": {
+        "typ": "string",
+        "laenge": 255
+      },
+      "default": "Sehenswürdigkeiten und Ausflugsziele ohne Eintrittsgebühren.",
+      "erforderlich": "nein"
+    },
+    "datenquelleHinweis": {
+      "label": "Methodik & Datenquelle",
+      "category": "beschreibung",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": "Die Daten stammen aus dem offenen **Knowledge Graph der Deutschen Zentrale für Tourismus (DZT)**. Sie werden unter offenen Lizenzen (z. B. CC BY, CC0) bereitgestellt und für diese Region aufbereitet.",
+      "erforderlich": "nein"
+    },
+    "datenStand": {
+      "label": "Datenstand (Text)",
+      "category": "beschreibung",
+      "format": {
+        "typ": "string",
+        "laenge": 100
+      },
+      "default": "Stand: Abruf beim DZT Knowledge Graph",
+      "erforderlich": "nein"
+    },
+    "weiterfuehrendeLinks": {
+      "label": "Verwandte Links",
+      "category": "beschreibung",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": "- [Open Data Germany (DZT)](https://open-data-germany.org/)\n- [Open Data App Store](https://open-data-app-store.de/)",
+      "erforderlich": "nein"
+    },
+    "kontakt": {
+      "label": "Kontakt-Text",
+      "category": "kontakt-rechtliches",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": "Sie haben Fragen, Hinweise oder Verbesserungsvorschläge zu dieser App? Wenden Sie sich gern an den Betreiber des Open Data Portals.\n\nTelefon: [0711 31009-3100](tel:+49711310093100)\nE-Mail: [info@ondics.de](mailto:info@ondics.de)",
+      "erforderlich": "ja"
+    },
+    "impressum": {
+      "label": "Impressum",
+      "category": "kontakt-rechtliches",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": "## Anbieter\n\nOndics GmbH\n\nBlumenstraße 19\n70182 Stuttgart\n\nWebsite: [https://www.ondics.de/](https://www.ondics.de/)\n\n## Kontakt\n\nTelefon: 0711 31009-3100\nE-Mail: [info@ondics.de](mailto:info@ondics.de)",
+      "erforderlich": "ja"
+    },
+    "datenschutz": {
+      "label": "Datenschutzerklärung",
+      "category": "kontakt-rechtliches",
+      "format": {
+        "typ": "markdown"
+      },
+      "default": "Die Sehenswürdigkeiten-App verarbeitet keine personenbezogenen Daten von Besucher:innen. Kartenkacheln werden datenschutzfreundlich von OpenStreetMap geladen.\n\nDatenabrufe der Sehenswürdigkeiten erfolgen über den gesicherten Store-Relay ohne Übertragung von Browserdaten an Dritte.",
+      "erforderlich": "ja"
+    },
+    "fusszeile": {
+      "label": "Fußzeile",
+      "category": "kontakt-rechtliches",
+      "format": {
+        "typ": "string",
+        "laenge": 255
+      },
+      "default": "© 2026 | App und Daten: DZT Knowledge Graph & ODAS | Entwicklung: Ondics GmbH",
+      "erforderlich": "ja"
+    },
+    "urlDaten": {
+      "label": "URL zum Datensatz",
+      "category": "datenherkunft",
+      "format": {
+        "typ": "url",
+        "laenge": 500
+      },
+      "default": "https://open-data-germany.org/",
+      "erforderlich": "ja"
+    },
+    "apiurls": {
+      "label": "URLs zu Datenressourcen",
+      "category": "datenherkunft",
+      "hilfe": "Diese App benötigt die „Wissensdatenbank (SPARQL)“ (Deutschland-Tourismus, DZT Knowledge Graph). Der Endpunkt wird über das ODAS-Wissens-Relay (/dzt) erreicht, nicht direkt. Beispiel: https://proxy.opendatagermany.io/api/ts/v1/kg/sparql.",
+      "typ": "array",
+      "format": {
+        "typ": "url",
+        "laenge": 500
+      },
+      "urls": [
+        {
+          "name": "dztsparql",
+          "label": "SPARQL-Endpunkt (DZT)",
+          "default": "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql",
+          "beispiel": "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql",
+          "erforderlich": "nein"
+        }
+      ]
+    },
+    "proxyAktiv": {
+      "label": "ODAS Proxy aktivieren",
+      "category": "datenherkunft",
+      "format": {
+        "typ": "dropdown",
+        "optionen": [
+          "nein",
+          "ja"
+        ]
+      },
+      "default": "nein",
+      "hilfe": "Für den DZT Knowledge Graph nutzt die App den gesicherten Relay /dzt statt des ODP-Proxys.",
+      "erforderlich": "ja"
+    },
+    "ort": {
+      "label": "Gemeinde- oder Regionsname",
+      "category": "sonstiges",
+      "format": {
+        "typ": "string",
+        "laenge": 120
+      },
+      "default": "Burladingen",
+      "hilfe": "Name der Gemeinde oder Region, die im Titel und als Standardbezugspunkt angezeigt wird.",
+      "erforderlich": "ja"
+    },
+    "latitude": {
+      "label": "Breitengrad (Zentrum)",
+      "category": "sonstiges",
+      "format": {
+        "typ": "string",
+        "laenge": 30
+      },
+      "default": "48.2917",
+      "hilfe": "Geografischer Breitengrad des Zentrums für die Umkreissuche (z. B. 48.2917).",
+      "erforderlich": "ja"
+    },
+    "longitude": {
+      "label": "Längengrad (Zentrum)",
+      "category": "sonstiges",
+      "format": {
+        "typ": "string",
+        "laenge": 30
+      },
+      "default": "9.1122",
+      "hilfe": "Geografischer Längengrad des Zentrums für die Umkreissuche (z. B. 9.1122).",
+      "erforderlich": "ja"
+    },
+    "radiusKm": {
+      "label": "Suchumkreis (in km)",
+      "category": "sonstiges",
+      "format": {
+        "typ": "dropdown",
+        "optionen": [
+          "5",
+          "10",
+          "25",
+          "50",
+          "100"
+        ]
+      },
+      "default": "25",
+      "hilfe": "Radius um das Zentrum, in dem Sehenswürdigkeiten abgefragt und dargestellt werden.",
+      "erforderlich": "ja"
+    },
+    "standardFilter": {
+      "label": "Standard-Ansichtsfilter",
+      "category": "sonstiges",
+      "format": {
+        "typ": "dropdown",
+        "optionen": [
+          "alle",
+          "kinder",
+          "indoor",
+          "outdoor",
+          "kostenlos",
+          "outlet",
+          "culinary"
+        ]
+      },
+      "default": "alle",
+      "hilfe": "Legt fest, welche Sehenswürdigkeiten beim ersten Laden der Seite vorausgewählt sind.",
+      "erforderlich": "ja"
+    },
+    "brandingCSS": {
+      "label": "Branding CSS",
+      "category": "sonstiges",
+      "format": {
+        "typ": "string",
+        "laenge": 10000
+      },
+      "default": "",
+      "erforderlich": "nein"
+    },
+    "brandingCSSFile": {
+      "label": "Branding CSS Datei",
+      "category": "sonstiges",
+      "format": {
+        "typ": "string",
+        "laenge": 500
+      },
+      "default": "assets/branding.css",
+      "erforderlich": "nein"
+    }
+  }
+}

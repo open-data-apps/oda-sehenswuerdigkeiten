@@ -1,0 +1,68 @@
+{
+  "seitentitel": "Sehenswürdigkeiten Burladingen & Umgebung",
+  "titel": "Sehenswürdigkeiten",
+  "icon": "assets/odas-app-icon.svg",
+  "sprache": "de",
+  "standardSprache": "de",
+  "bannerTitel": "Sehenswürdigkeiten Burladingen",
+  "bannerUntertitel": "Ausflugsziele & Highlights in unserer Region",
+  "ort": "Burladingen",
+  "latitude": "48.2917",
+  "longitude": "9.1122",
+  "standardFilter": "alle",
+  "proxyAktiv": "nein",
+  "datenStand": "Stand: Abruf beim DZT Knowledge Graph",
+  "kpiKontext1": "Gesamtzahl der im ausgewählten Umkreis gefundenen Sehenswürdigkeiten.",
+  "kpiKontext2": "Ausflugsziele, die besonders für Kinder und Familien geeignet sind.",
+  "kpiKontext3": "Wettergeschützte Ziele – ideal für Regentage oder Hitzeschutz.",
+  "kpiKontext4": "Sehenswürdigkeiten und Ausflugsziele ohne Eintrittsgebühren.",
+  "datenquelleHinweis": "<p>Die Daten stammen aus dem offenen <strong>Knowledge Graph der Deutschen Zentrale für Tourismus (DZT)</strong>. Sie werden unter offenen Lizenzen (z. B. CC BY, CC0) bereitgestellt und für diese Region aufbereitet.</p>",
+  "weiterfuehrendeLinks": "<ul><li><a href=\"https://open-data-germany.org/\" target=\"_blank\" rel=\"noopener\">Open Data Germany (DZT)</a></li><li><a href=\"https://open-data-app-store.de/\" target=\"_blank\" rel=\"noopener\">Open Data App Store</a></li></ul>",
+  "kontakt": [
+    "_multiline_",
+    "<p>Sie haben Fragen, Hinweise oder Verbesserungsvorschläge zu dieser App? Wenden Sie sich gern an den Betreiber des Open Data Portals.</p>",
+    "<p>Telefon: <a href='tel:+49711310093100'>0711 31009-3100</a><br>E-Mail: <a href='mailto:info@ondics.de'>info@ondics.de</a></p>"
+  ],
+  "beschreibung": [
+    "<p>Die App <strong>Sehenswürdigkeiten</strong> macht Ausflugsziele, Kulturschätze und Naturattraktionen aus dem Knowledge Graph der Deutschen Zentrale für Tourismus (DZT) auf einer interaktiven Karte und in einer filterbaren Übersicht für Bürger:innen und Gäste erlebbar.</p>",
+    "<h2>Methodik</h2>",
+    "<p>Die App fragt für die konfigurierte Gemeinde und den festgelegten Umkreis touristische Attraktionen (schema:TouristAttraction) ab. Besondere Filter heben Angebote für Kinder &amp; Familien hervor (Spielplätze, Erlebnispfade, Schatzsuchen) sowie wettergeschützte Indoor-Ziele (Museen, Burgen, Höhlen) für Regentage oder Hitzeschutz.</p>",
+    "<h2>Datenquelle</h2>",
+    "<ul>",
+    "<li><strong>Open Data Portal:</strong> <a href=\"https://open-data-app-store.de/\" target=\"_blank\" rel=\"noopener\">Open Data App Store</a></li>",
+    "<li><strong>Datensatz:</strong> <a href=\"https://open-data-germany.org/\" target=\"_blank\" rel=\"noopener\">DZT Knowledge Graph (POIs)</a></li>",
+    "<li><strong>Ressource:</strong> <a href=\"https://proxy.opendatagermany.io/api/ts/v2/kg/things\" target=\"_blank\" rel=\"noopener\">DZT Query API v2</a></li>",
+    "</ul>",
+    "<h2>Open Data App</h2>",
+    "<p>Diese Anwendung basiert auf offenen Schnittstellen und ist Teil des Open Data App Stores.</p>",
+    "<ul>",
+    "<li><a href=\"https://open-data-app-store.de/\" target=\"_blank\" rel=\"noopener\">Open Data App Store</a></li>",
+    "<li><a href=\"https://github.com/open-data-apps\" target=\"_blank\" rel=\"noopener\">Open Data Apps auf GitHub</a></li>",
+    "</ul>"
+  ],
+  "impressum": [
+    "_multiline_",
+    "<h2>Anbieter</h2>",
+    "<p>Ondics GmbH</p>",
+    "<p>Blumenstraße 19<br>70182 Stuttgart</p>",
+    "<p>Website: <a href='https://www.ondics.de/' target='_blank' rel='noopener'>https://www.ondics.de/</a></p>",
+    "<h2>Kontakt</h2>",
+    "<p>Telefon: 0711 31009-3100<br>E-Mail: <a href='mailto:info@ondics.de'>info@ondics.de</a></p>"
+  ],
+  "datenschutz": [
+    "<p>Die Sehenswürdigkeiten-App verarbeitet keine personenbezogenen Daten von Besucher:innen. Kartenkacheln werden datenschutzfreundlich von OpenStreetMap geladen.</p>",
+    "<p>Datenabrufe der Sehenswürdigkeiten erfolgen über den gesicherten Store-Relay ohne Übertragung von Browserdaten an Dritte.</p>"
+  ],
+  "fusszeile": "© 2026 | App und Daten: DZT Knowledge Graph & ODAS | Entwicklung: Ondics GmbH",
+  "brandingCSS": "",
+  "brandingCSSFile": "../assets/branding.css",
+  "urlDaten": "https://open-data-germany.org/",
+  "apiurls": [
+    {
+      "name": "dztsparql",
+      "label": "SPARQL-Endpunkt (DZT)",
+      "url": "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql"
+    }
+  ],
+  "radiusKm": "25"
+}
