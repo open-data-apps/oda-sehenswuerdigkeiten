@@ -59,6 +59,7 @@ function onPageLeave(page) {
  * eingehängt ist (verhindert CSS-Transform-Stacking-Context-Probleme auf Sekundärseiten)
  */
 function ensureGlobalOffcanvasSetup() {
+  if (typeof document === "undefined" || !document.getElementById) return;
   const offcanvasNav = document.getElementById("offcanvasNavbar");
   if (offcanvasNav && offcanvasNav.parentElement !== document.body) {
     document.body.appendChild(offcanvasNav);
@@ -125,6 +126,127 @@ function renderPageOverride(page) {
   `;
 }
 
+// ===========================================================================
+// 3-Stufen Geocoding Engine (Option 1C)
+// ===========================================================================
+let GEMEINDEN_LOOKUP = null;
+
+async function loadGemeindenLookup(fetchFn) {
+  if (GEMEINDEN_LOOKUP) return GEMEINDEN_LOOKUP;
+  // Node.js Test-Umgebung: Direktes Laden via fs falls vorhanden
+  if (typeof process !== "undefined" && process.versions && process.versions.node && typeof require === "function") {
+    try {
+      const fs = require("fs");
+      const path = require("path");
+      const dir = typeof __dirname !== "undefined" ? __dirname : process.cwd();
+      const candidates = [
+        path.join(dir, "assets/gemeinden.json"),
+        path.join(dir, "../assets/gemeinden.json"),
+        path.join(process.cwd(), "assets/gemeinden.json"),
+        path.join(process.cwd(), "oda-sehenswuerdigkeiten/assets/gemeinden.json")
+      ];
+      for (const fp of candidates) {
+        if (fs.existsSync(fp)) {
+          GEMEINDEN_LOOKUP = JSON.parse(fs.readFileSync(fp, "utf-8"));
+          return GEMEINDEN_LOOKUP;
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Browser-Umgebung: Laden via fetch
+  const effectiveFetch = fetchFn || (typeof fetch !== "undefined" ? fetch : null);
+  if (effectiveFetch) {
+    const candidatePaths = ["assets/gemeinden.json", "../assets/gemeinden.json"];
+    for (const p of candidatePaths) {
+      try {
+        const resp = await effectiveFetch(p);
+        if (resp && resp.ok) {
+          GEMEINDEN_LOOKUP = await resp.json();
+          return GEMEINDEN_LOOKUP;
+        }
+      } catch (_) {}
+    }
+  }
+
+  // Fallback auf Basiseintrag Burladingen
+  return { "burladingen": [48.2917, 9.1122] };
+}
+
+async function resolveCoordinates(ort, configdata = {}, fetchFn = null) {
+  // Stufe 1: Explizite Koordinaten in configdata
+  const cfgLat = configdata.latitude !== undefined && configdata.latitude !== "" ? parseFloat(configdata.latitude) : NaN;
+  const cfgLng = configdata.longitude !== undefined && configdata.longitude !== "" ? parseFloat(configdata.longitude) : NaN;
+  if (!isNaN(cfgLat) && !isNaN(cfgLng) && cfgLat !== 0 && cfgLng !== 0) {
+    return { lat: cfgLat, lng: cfgLng, source: "config" };
+  }
+
+  const cleanOrt = String(ort || "").trim().toLowerCase();
+  if (!cleanOrt) {
+    return { lat: 48.2917, lng: 9.1122, source: "fallback" };
+  }
+
+  // Cache-Prüfung im sessionStorage
+  const cacheKey = `sw_geo_v1_${cleanOrt}`;
+  try {
+    if (typeof sessionStorage !== "undefined") {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed.lat === "number" && typeof parsed.lng === "number") {
+          return { lat: parsed.lat, lng: parsed.lng, source: parsed.source || "offline" };
+        }
+      }
+    }
+  } catch (_) {}
+
+  // Stufe 2: Offline-Gemeindeverzeichnis
+  const lookup = await loadGemeindenLookup(fetchFn);
+  if (lookup && lookup[cleanOrt]) {
+    const coords = lookup[cleanOrt];
+    const result = { lat: coords[0], lng: coords[1], source: "offline" };
+    try {
+      if (typeof sessionStorage !== "undefined") sessionStorage.setItem(cacheKey, JSON.stringify(result));
+    } catch (_) {}
+    return result;
+  }
+
+  // Stufe 3: Automatischer Online-Geocoding-Fallback via OpenStreetMap Nominatim
+  const effectiveFetch = fetchFn || (typeof fetch !== "undefined" ? fetch : null);
+  if (effectiveFetch) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&city=${encodeURIComponent(cleanOrt)}&country=Germany&limit=1`;
+      const resp = await effectiveFetch(url, {
+        headers: { "Accept": "application/json" }
+      });
+      if (resp && resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].lat && data[0].lon) {
+          const lat = parseFloat(data[0].lat);
+          const lng = parseFloat(data[0].lon);
+          const result = { lat, lng, source: "nominatim" };
+          try {
+            if (typeof sessionStorage !== "undefined") sessionStorage.setItem(cacheKey, JSON.stringify(result));
+          } catch (_) {}
+          return result;
+        }
+      }
+    } catch (err) {
+      console.warn("Geocoding-Abruf fehlgeschlagen, nutze Fallback:", err);
+    }
+  }
+
+  // Stufe 4: Sicherer Fallback (Standard: Burladingen Zentrum)
+  return { lat: 48.2917, lng: 9.1122, source: "fallback" };
+}
+
+if (typeof window !== "undefined") {
+  window.resolveCoordinates = resolveCoordinates;
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.resolveCoordinates = resolveCoordinates;
+}
+
 /**
  * Hauptfunktion der ODAS-Anwendung
  */
@@ -175,6 +297,9 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     }
   }
 
+  // 3-Stufen-Geocoding: Koordinaten auflösen
+  const coords = await resolveCoordinates(configdata.ort || "Burladingen", configdata);
+
   // Instanz-Zustand
   const state = {
     uid,
@@ -183,8 +308,9 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     disposed: false,
     appendedModals: [],
     ort: String(configdata.ort || "Burladingen").trim(),
-    lat: parseFloat(configdata.latitude) || 48.2917,
-    lng: parseFloat(configdata.longitude) || 9.1122,
+    lat: coords.lat,
+    lng: coords.lng,
+    coordSource: coords.source,
     umkreis: parseInt(configdata.umkreis || configdata.radiusKm, 10) || 25,
     standardFilter: String(configdata.standardFilter || "alle").trim(),
     allPois: [],
@@ -2185,6 +2311,15 @@ function openLightbox(poi, initialIndex = 0) {
   // Sanftes Einblenden via requestAnimationFrame
   requestAnimationFrame(() => lightbox.classList.add("sw-lightbox-open"));
 
+  // Alle Bilder des POIs vorab im Hintergrund laden & decodieren (kein Flackern)
+  images.forEach((img) => {
+    if (img && img.url) {
+      const pre = new Image();
+      pre.src = img.url;
+      if (pre.decode) pre.decode().catch(() => {});
+    }
+  });
+
   let isTransitioning = false;
 
   function updateImage(idx, direction = 1) {
@@ -2206,33 +2341,55 @@ function openLightbox(poi, initialIndex = 0) {
     const slideOutClass = direction > 0 ? "sw-img-slide-out-left" : "sw-img-slide-out-right";
     const slideInClass = direction > 0 ? "sw-img-slide-in-right" : "sw-img-slide-in-left";
 
+    // 1. Altes Bild gleitet weich aus
     imgEl.classList.add(slideOutClass);
 
-    setTimeout(() => {
+    // 2. Neues Bild vorab decodieren, damit die Dimensionen sofort stabil sind
+    const nextItem = images[idx];
+    const tempImg = new Image();
+    tempImg.src = nextItem.url;
+
+    const applyNewImage = () => {
       currentIndex = idx;
-      imgEl.src = images[currentIndex].url;
+      imgEl.src = nextItem.url;
       if (counterEl && images.length > 1) {
         counterEl.textContent = `${currentIndex + 1} / ${images.length}`;
       }
       if (captionEl) {
-        captionEl.textContent = (images[currentIndex].copyright || images[currentIndex].license)
-          ? `Bild: ${escapeHtml(images[currentIndex].copyright || "DZT")} ${images[currentIndex].license ? `(${escapeHtml(images[currentIndex].license)})` : ""}`
+        captionEl.textContent = (nextItem.copyright || nextItem.license)
+          ? `Bild: ${escapeHtml(nextItem.copyright || "DZT")} ${nextItem.license ? `(${escapeHtml(nextItem.license)})` : ""}`
           : "";
       }
 
+      // Sofortige Positionierung am Einstiegspunkt ohne Transition
+      imgEl.style.transition = "none";
       imgEl.classList.remove(slideOutClass);
       imgEl.classList.add(slideInClass);
+      void imgEl.offsetWidth; // Layout-Reflow erzwingen
 
-      // Force layout reflow so the browser registers the initial transform
-      void imgEl.offsetWidth;
-
+      // Double-RAF: Stellt sicher, dass der Browser die Startposition vor der Transition rendert
       requestAnimationFrame(() => {
-        imgEl.classList.remove(slideInClass);
-        setTimeout(() => {
-          isTransitioning = false;
-        }, 180);
+        requestAnimationFrame(() => {
+          imgEl.style.transition = "";
+          imgEl.classList.remove(slideInClass);
+          setTimeout(() => {
+            isTransitioning = false;
+          }, 220);
+        });
       });
-    }, 140);
+    };
+
+    // Nach dem Ausblenden (120ms) das neue, decodierte Bild einblenden
+    setTimeout(() => {
+      if (tempImg.decode) {
+        tempImg.decode().then(applyNewImage).catch(applyNewImage);
+      } else if (tempImg.complete) {
+        applyNewImage();
+      } else {
+        tempImg.onload = applyNewImage;
+        tempImg.onerror = applyNewImage;
+      }
+    }, 120);
   }
 
   function closeLightbox() {
@@ -2430,6 +2587,7 @@ function fallbackClipboardCopy(text) {
 }
 
 function ensureQrNavMenuItem(state) {
+  if (typeof document === "undefined" || !document.querySelector) return;
   const navList = document.querySelector("#offcanvasNavbar .navbar-nav");
   if (!navList) return;
   if (navList.querySelector(".sw-nav-item-qr")) return;

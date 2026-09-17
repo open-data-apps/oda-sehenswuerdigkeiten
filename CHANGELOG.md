@@ -4,6 +4,22 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.0 - 2026-09-17
+
+### Hinzugefügt & Verbessert
+- **Intelligente 3-Stufen-Geocoding Engine (Option 1C):**
+  - Ortsname genügt: Die Eingabe von geografischen Koordinaten ist nicht mehr zwingend erforderlich.
+  - *Stufe 1 (Experten-Override):* Manuell eingetragene Koordinaten werden vorrangig genutzt.
+  - *Stufe 2 (Offline-Lookup):* Integriertes Gemeindeverzeichnis (`assets/gemeinden.json`) löst über 240 Städte und Gemeinden in Baden-Württemberg und Deutschland sofort (0 ms Latenz) und 100 % DSGVO-konform ohne externen Serveraufruf auf.
+  - *Stufe 3 (Online-Fallback):* Unbekannte Orte oder Stadtteile werden automatisiert über OpenStreetMap Nominatim geocodiert und im `sessionStorage` zwischengespeichert.
+  - `latitude` und `longitude` in `app-package.json` auf optional gesetzt (`erforderlich: nein`).
+- **Ruckelfreie Vollbildmodus-Bilderanimation (Pre-Decode & Smooth Transition):**
+  - Vorab-Decodierung (`Image.decode()`) aller POI-Bilder beim Öffnen der Lightbox im Grafikspeicher.
+  - Bildwechsel erfolgt erst nach erfolgreichem Decodieren mit Double-RAF und `translate3d`-Hardwarebeschleunigung.
+  - Beseitigt das kurzzeitige Kollabieren/Springen der Bildgröße (Reflow-Jitter) beim Durchblättern von Fotos vollständig.
+- **Mobiles Burger-Menü Bereinigung:**
+  - Auf Smartphones (< 768px Displaybreite) wird der redundante Menüeintrag `[ 📱 Auf Smartphone öffnen ]` per Media-Query automatisch ausgeblendet, da der Nutzer sich bereits auf dem Mobilgerät befindet.
+
 ## 1.7.2 - 2026-09-17
 
 ### Behoben & Verbessert

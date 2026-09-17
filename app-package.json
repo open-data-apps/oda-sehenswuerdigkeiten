@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "sehenswuerdigkeiten",
   "name": "Sehenswürdigkeiten",
-  "app-version": "1.7.2",
+  "app-version": "1.8.0",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -337,7 +337,7 @@
         "laenge": 120
       },
       "default": "Burladingen",
-      "hilfe": "Name der Gemeinde oder Region, die im Titel und als Standardbezugspunkt angezeigt wird.",
+      "hilfe": "Name der Gemeinde oder Stadt (z. B. Burladingen, Tübingen, Balingen). Die Koordinaten werden anhand dieses Namens automatisch ermittelt.",
       "erforderlich": "ja"
     },
     "latitude": {
@@ -347,9 +347,9 @@
         "typ": "string",
         "laenge": 30
       },
-      "default": "48.2917",
-      "hilfe": "Geografischer Breitengrad des Zentrums für die Umkreissuche (z. B. 48.2917).",
-      "erforderlich": "ja"
+      "default": "",
+      "hilfe": "Geografischer Breitengrad des Zentrums. Kann leer gelassen werden – die App ermittelt die Koordinaten automatisch anhand des Ortsnamens (Experten-Override).",
+      "erforderlich": "nein"
     },
     "longitude": {
       "label": "Längengrad (Zentrum)",
@@ -358,9 +358,9 @@
         "typ": "string",
         "laenge": 30
       },
-      "default": "9.1122",
-      "hilfe": "Geografischer Längengrad des Zentrums für die Umkreissuche (z. B. 9.1122).",
-      "erforderlich": "ja"
+      "default": "",
+      "hilfe": "Geografischer Längengrad des Zentrums. Kann leer gelassen werden – die App ermittelt die Koordinaten automatisch anhand des Ortsnamens (Experten-Override).",
+      "erforderlich": "nein"
     },
     "radiusKm": {
       "label": "Suchumkreis (in km)",

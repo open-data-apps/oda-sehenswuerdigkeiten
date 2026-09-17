@@ -104,9 +104,9 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `icon` | App-Icon | allgemein | ja |
 | `bannerTitel` | Titel im schwebenden Top-Banner | allgemein | nein |
 | `bannerUntertitel` | Untertitel im schwebenden Top-Banner | allgemein | nein |
-| `ort` | Gemeindename / Regionsbezeichnung | sonstiges | ja |
-| `latitude` | Geografischer Breitengrad des Zentrums | sonstiges | ja |
-| `longitude` | Geografischer Längengrad des Zentrums | sonstiges | ja |
+| `ort` | Gemeindename / Regionsbezeichnung (dient auch zur autom. Koordinaten-Ermittlung) | sonstiges | ja |
+| `latitude` | Geografischer Breitengrad (optional, autom. Geocoding via `ort`) | sonstiges | nein |
+| `longitude` | Geografischer Längengrad (optional, autom. Geocoding via `ort`) | sonstiges | nein |
 | `radiusKm` | Suchradius in km (5, 10, 25, 50, 100) | sonstiges | ja |
 | `standardFilter` | Initial aktiver Themenfilter | sonstiges | ja |
 | `apiurls` | Datenquellen (SPARQL-Ressource) | datenherkunft | ja |
@@ -127,6 +127,7 @@ Beim Aufruf dieser App werden keine externen Server für Programmbibliotheken ko
 Extern abgerufen werden ausschließlich:
 - Die konfigurierte Datenquelle des DZT Knowledge Graph über den internen ODAS-Store-Relay (`/dzt`).
 - Die OpenStreetMap-Kartenkacheln: `tile.openstreetmap.org` (OpenStreetMap contributors, ODbL).
+- Bei unvollständigen Koordinaten und unbekanntem Ort im Offline-Verzeichnis: Asynchrones Geocoding via OSM Nominatim (`nominatim.openstreetmap.org`).
 
 Externe Routenplaner-Links (z. B. Google Maps, OpenStreetMap) werden erst bei ausdrücklichem Benutzerklick in einem neuen Tab geöffnet.
 
@@ -136,12 +137,14 @@ Externe Routenplaner-Links (z. B. Google Maps, OpenStreetMap) werden erst bei au
 
 | Datei | Beschreibung |
 | --- | --- |
-| `app/app.js` | App-Logik: DZT SPARQL-Abruf, Klassifikations-Engine, Leaflet-Karte, Clustering, Cockpit, Filter, Katalog, Lightbox, QR-Code |
+| `app/app.js` | App-Logik: DZT SPARQL-Abruf, 3-Stufen-Geocoding, Klassifikations-Engine, Leaflet-Karte, Clustering, Cockpit, Filter, Katalog, Lightbox, QR-Code |
 | `app/app.css` | Vollbild-Layout, Glassmorphism-Cockpit, Vektor-Pins, Lightbox-Animationen, Mobile Queries |
 | `app-package.json` | ODAS-Paketmetadaten und Instanzkonfiguration mit v1-kompatiblen Typen und Categories |
+| `assets/gemeinden.json` | Integriertes Offline-Gemeindeverzeichnis für sofortiges Geocoding ohne externen Request |
 | `assets/schema.json` | Frictionless Table Schema des normalisierten Datenmodells |
 | `assets/odas-app-icon.svg` | Normgerechtes ODAS SVG-App-Icon (512×512, Gradient, Shadow) |
 | `odas-config/config.json` | Lokale Test-Konfiguration |
+| `tests/test_geocoding.js` | Unit-Tests für 3-Stufen-Geocoding (Config, Offline, Nominatim, Fallback) |
 | `tests/test_classification.js` | Unit-Tests für Klassifikation, Tags und Normalisierung |
 | `tests/test_svg_pins.js` | Unit-Tests für Vektor-SVG-Pin-Generierung |
 
