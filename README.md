@@ -154,6 +154,18 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 
 ---
 
+## Tests
+
+```bash
+node --test tests/*.js
+```
+
+Die Menütransition lässt sich mit einer vorhandenen Playwright-/Chrome-Installation zusätzlich prüfen (keine zusätzliche App-Abhängigkeit):
+
+```bash
+PLAYWRIGHT_MODULE=/pfad/zur/playwright-installation node --test tests/menu-motion.browser.cjs
+```
+
 ## Autor
 
 © 2026, Ondics GmbH

@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.5 - 2026-10-09
+- FIX: Burger-Menü verwendet die native Bootstrap-Transition statt einer abrupt anlaufenden eigenen Kurve; reduzierte Bewegung wird nicht mehr durch `!important` überschrieben.
+- TEST: Opt-in-Browserregression für native Menütransition und reduzierte Bewegung ergänzt.
+
 ## 1.8.4 - 2026-10-08
 - FIX: F-127: Katalogkarten per Enter/Leertaste aktivieren; Tastaturlistener instanzgebunden abbauen.
 - DOC: F-128: Direkte Kachel-/Bild-/Nominatimkontakte, IP-/Headerübertragung, Store-Relay und Sitzungscache in Paket, lokaler Config und README klar unterscheiden.

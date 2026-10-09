@@ -1142,7 +1142,6 @@ body.sw-app-fullscreen #main-content {
   border-left: 1px solid rgba(226, 232, 240, 0.8) !important;
   box-shadow: -12px 0 36px rgba(15, 23, 42, 0.12) !important;
   width: 320px !important;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 #offcanvasNavbar .offcanvas-header {
