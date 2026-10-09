@@ -4,6 +4,28 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.4 - 2026-10-08
+- FIX: F-127: Katalogkarten per Enter/Leertaste aktivieren; Tastaturlistener instanzgebunden abbauen.
+- DOC: F-128: Direkte Kachel-/Bild-/Nominatimkontakte, IP-/Headerübertragung, Store-Relay und Sitzungscache in Paket, lokaler Config und README klar unterscheiden.
+- FIX: F-112: Unbekannte Antwortstrukturen als Formatfehler statt als leere Daten anzeigen; bekannte leere Listen bleiben gültig.
+- FIX: F-111: Lokale Demo aus dem gelieferten ../assets-Pfad laden; alternativen Assetpfad weiter unterstützen. Demo-Fallback ausschließlich auf localhost/127.0.0.1, nicht nach Produktivfehlern.
+
+## 1.8.3 - 2026-10-08
+- FIX: F-113: Instanz vor dem Geocoding registrieren; veraltete Geocode-/Vendor-/Datenantworten dürfen Unterseiten und Instanzzustand nicht ersetzen. Veraltete Datenantworten schreiben nicht mehr in den DZT-Daten-Cache.
+- FIX: F-113: Eigene Lightbox samt Tastaturlistener, Bootstrap-Dialoge und Backdrops beim Verlassen entfernen. Eigene Modals ohne Fade, damit keine Übergangs-Callbacks auf bereits freigegebene Instanzen zugreifen.
+- FIX: F-114: Erhaltener Wrapper gilt nur für denselben Container und dieselbe Konfiguration; Session-Daten-Cache zusätzlich an die Quelle binden. Fertig geladene Filter/Karte bleiben bei unveränderter Rückkehr erhalten.
+
+## 1.8.2 - 2026-10-02
+- ENH: Verwendete ODAS-Dienste in `odas-services` deklariert.
+
+## 1.8.1 - 2026-09-29
+
+### Behoben
+- **XSS über Inline-JavaScript geschlossen (Audit F-110):**
+  - POI-IDs und Rohdaten-JSON werden nicht mehr in `onclick`-Attributen eingesetzt; stattdessen HTML-escapade `data-sw-action`-/`data-sw-poi-id`-Attribute mit delegiertem Klick-Handler (`registerSwActionHandler`).
+  - Kopier-Button „In Zwischenablage kopieren" nutzt `data-sw-copy` statt `JSON.stringify` im Attribut; Kopieren funktioniert damit für alle Datensätze wieder (zuvor Syntaxfehler).
+  - Neue Regressionstests: `tests/test_inline_js_sinks.js`.
+
 ## 1.8.0 - 2026-09-17
 
 ### Hinzugefügt & Verbessert

@@ -124,12 +124,16 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 
 Beim Aufruf dieser App werden keine externen Server für Programmbibliotheken kontaktiert; alle Bibliotheken (Bootstrap, Leaflet, MarkerCluster, QRCode) werden lokal aus `app/vendor/` ausgeliefert.
 
-Extern abgerufen werden ausschließlich:
-- Die konfigurierte Datenquelle des DZT Knowledge Graph über den internen ODAS-Store-Relay (`/dzt`).
-- Die OpenStreetMap-Kartenkacheln: `tile.openstreetmap.org` (OpenStreetMap contributors, ODbL).
-- Bei unvollständigen Koordinaten und unbekanntem Ort im Offline-Verzeichnis: Asynchrones Geocoding via OSM Nominatim (`nominatim.openstreetmap.org`).
+**Direkte Browserkontakte:**
+- OpenStreetMap-Kartenkacheln: `tile.openstreetmap.org` (einschließlich Kachel-Subdomains).
+- Bei unvollständigen Koordinaten und unbekanntem Ort im Offline-Verzeichnis: OSM Nominatim (`nominatim.openstreetmap.org`). Übermittelt wird der vom Betreiber konfigurierte Ortsname; die App fragt kein Geräte-GPS ab.
+- POI-Bilder: die jeweiligen Bildanbieter aus den Bild-URLs der geladenen DZT-Daten. Diese Bilder laufen **nicht** über `/dzt`; ihre Hosts sind datenabhängig und nicht abschließend statisch auflistbar.
 
-Externe Routenplaner-Links (z. B. Google Maps, OpenStreetMap) werden erst bei ausdrücklichem Benutzerklick in einem neuen Tab geöffnet.
+Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und technische HTTP-Header, etwa Browserkennung und gegebenenfalls einen Referrer gemäß Browsereinstellungen. Die App verwendet keine eigenen Analyse- oder Trackingdienste. Für serverseitige Protokollierung und Aufbewahrung gelten die Angaben der jeweiligen Betreiber; die App macht keine pauschale Speicherzusage.
+
+**Store-Relay:** Der Browser lädt DZT-Sachdaten im Livebetrieb über den gleichursprünglichen `/dzt`-Endpunkt. Erst der Store kontaktiert `proxy.opendatagermany.io` serverseitig; der DZT-Schlüssel verbleibt dort. Dieser Relay schützt nicht vor den separat genannten direkten Karten-, Bild- und Geocodingkontakten. Ortsauflösungen und POI-Daten werden im `sessionStorage` der Browsersitzung zwischengespeichert.
+
+**Nur nach Klick:** Externe Informations- und Routenplanerlinks (z. B. `www.google.com`, `www.openstreetmap.org`, `open-data-germany.org`) öffnen in einem neuen Tab. Vokabular-/Namespace-URIs (`schema.org`, `www.ontotext.com`, `www.w3.org`) im Code sind keine Browser-Datenabrufe.
 
 ---
 

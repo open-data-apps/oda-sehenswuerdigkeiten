@@ -50,8 +50,12 @@
     "<p>Telefon: 0711 31009-3100<br>E-Mail: <a href='mailto:info@ondics.de'>info@ondics.de</a></p>"
   ],
   "datenschutz": [
-    "<p>Die Sehenswürdigkeiten-App verarbeitet keine personenbezogenen Daten von Besucher:innen. Kartenkacheln werden datenschutzfreundlich von OpenStreetMap geladen.</p>",
-    "<p>Datenabrufe der Sehenswürdigkeiten erfolgen über den gesicherten Store-Relay ohne Übertragung von Browserdaten an Dritte.</p>"
+    "<p>Alle für die Darstellung benötigten Programmbibliotheken werden mit der App ausgeliefert. Beim Aufruf werden dafür keine externen Server kontaktiert.</p>",
+    "<p>Die App verwendet keine eigenen Analyse- oder Trackingdienste. Bei direkten Browserabrufen erhalten die jeweiligen Anbieter insbesondere die IP-Adresse und technische HTTP-Header, etwa Browserkennung und gegebenenfalls einen Referrer gemäß Browsereinstellungen.</p>",
+    "<h2>Beim Aufruf kontaktierte Drittanbieter</h2>",
+    "<ul><li>OpenStreetMap-Kartenkacheln: tile.openstreetmap.org (einschließlich Kachel-Subdomains).</li><li>Bei unvollständigen Koordinaten und unbekanntem Ort im Offline-Verzeichnis: OSM Nominatim (nominatim.openstreetmap.org). Übermittelt wird der vom Betreiber konfigurierte Ortsname; die App fragt kein Geräte-GPS ab.</li><li>POI-Bilder: die jeweiligen Bildanbieter aus den Bild-URLs der geladenen DZT-Daten. Diese Bilder laufen nicht über /dzt; ihre Hosts sind datenabhängig und nicht abschließend statisch auflistbar.</li></ul>",
+    "<p>DZT-Sachdaten lädt der Browser im Livebetrieb vom gleichursprünglichen Store-Relay /dzt. Der Store kontaktiert den DZT-Dienst serverseitig; der API-Schlüssel bleibt dort. Separate direkte Bild-, Karten- und Geocodingabrufe sind dadurch nicht ausgeschlossen.</p>",
+    "<p>Ortsauflösungen und POI-Daten werden im sessionStorage des Browsers für die Sitzung zwischengespeichert. Externe Informations- und Routenplanerlinks öffnen erst nach einem Klick. Für Protokollierung und Aufbewahrung auf Store- und Drittanbieterservern gelten die Angaben der jeweiligen Betreiber; hierzu trifft die App keine pauschale Speicherzusage.</p>"
   ],
   "fusszeile": "© 2026 | App und Daten: DZT Knowledge Graph & ODAS | Entwicklung: Ondics GmbH",
   "brandingCSS": "",

@@ -24,34 +24,45 @@ const swInstances = new Map();
  */
 function onPageLeave(page) {
   document.body.classList.remove("sw-app-fullscreen");
+  document.getElementById("sw-lightbox-overlay")?.__swClose(true);
+  const qrModal = document.getElementById("sw-qr-modal");
+  if (qrModal) detachSwModal(qrModal);
 
-  // Alle aktiven Bootstrap Modals sauber schliessen
-  try {
-    document.querySelectorAll(".modal.show").forEach((modalEl) => {
-      if (window.bootstrap && window.bootstrap.Modal) {
-        const inst = window.bootstrap.Modal.getInstance(modalEl);
-        if (inst) inst.hide();
-      }
-    });
-  } catch (err) {
-    console.warn("Fehler beim Schließen aktiver Modals:", err);
-  }
-
-  // Backdrops und Klassen restlos aufräumen
-  document.querySelectorAll(".modal-backdrop, .offcanvas-backdrop").forEach((b) => b.remove());
-  document.body.classList.remove("modal-open");
-  document.body.style.removeProperty("overflow");
-  document.body.style.removeProperty("padding-right");
-
-  // Startseiten-Wrapper detachen und im globalen Cache für die blitzschnelle Rückkehr aufbewahren
-  const mainContent = document.getElementById("main-content");
-  if (mainContent) {
-    const wrapper = mainContent.querySelector(".sw-fullscreen-wrapper");
-    if (wrapper) {
-      window.__swCachedAppWrapper = wrapper;
-      wrapper.remove();
+  // F-113/114: Nur vollständig geladene, eigene Instanzen behalten ihren Wrapper.
+  // Unterbrochene Ladungen werden vor jeder weiteren asynchronen Fortsetzung ungültig.
+  swInstances.forEach((state) => {
+    state.active = false;
+    if (typeof state.root.__swActionCleanup === "function") state.root.__swActionCleanup();
+    state.appendedModals.forEach(detachSwModal);
+    if (state.map) state.map.stop();
+    state.wrapper?.remove();
+    if (!state.ready) {
+      state.disposed = true;
+      if (state.map) state.map.remove();
+      state.map = null;
+      state.wrapper = null;
     }
+  });
+}
+
+function detachSwModal(modalEl) {
+  const inst = window.bootstrap?.Modal?.getInstance(modalEl);
+  if (inst) {
+    // F-113: Eigene Modals ohne fade: hide ist synchron, keine ausstehenden
+    // Bootstrap-Transitions greifen nach dispose auf die entfernte Instanz zu.
+    inst.hide();
+    inst.dispose();
   }
+  modalEl.remove();
+  if (!document.querySelector(".modal.show")) {
+    document.body.classList.remove("modal-open");
+    document.body.style.removeProperty("overflow");
+    document.body.style.removeProperty("padding-right");
+  }
+}
+
+function isSwActive(state) {
+  return !state.disposed && state.active && state.root.isConnected && swInstances.get(state.root) === state;
 }
 
 /**
@@ -247,31 +258,72 @@ if (typeof globalThis !== "undefined") {
   globalThis.resolveCoordinates = resolveCoordinates;
 }
 
+// F-110: Delegierter Klick-Handler statt Inline-JavaScript mit Datenwerten.
+// POI-IDs und Rohdaten-JSON liegen HTML-escapad in data-Attributen; der Browser
+// dekodiert sie beim dataset-Zugriff zurück in den Originalwert, ohne dass ein
+// JavaScript-Kontext mit untrusted Daten entsteht.
+function registerSwCopyHandler() {
+  if (window.__swCopyHandlerInstalled) return;
+  window.__swCopyHandlerInstalled = true;
+  document.addEventListener("click", (event) => {
+    const el = event.target instanceof Element ? event.target.closest("[data-sw-copy]") : null;
+    if (!el) return;
+    const text = el.dataset.swCopy || "";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => { el.textContent = "Kopiert!"; }).catch(() => {});
+    }
+  });
+}
+
+function registerSwActionHandler(root, state) {
+  registerSwCopyHandler();
+  if (typeof root.__swActionCleanup === "function") root.__swActionCleanup();
+  const handleSwActions = (event) => {
+    const el = event.target instanceof Element ? event.target.closest("[data-sw-action]") : null;
+    if (!el) return;
+    const poiId = el.dataset.swPoiId || "";
+    if (el.dataset.swAction === "open-detail") openDetailModal(state, poiId);
+    else if (el.dataset.swAction === "focus-poi") focusPoiOnMap(state, poiId);
+  };
+  // F-127: Als Schaltfläche deklarierte Katalogkarten brauchen echte Tastaturaktivierung.
+  const handleSwKeys = (event) => {
+    const el = event.target instanceof Element ? event.target.closest('[data-sw-action][role="button"]') : null;
+    if (!el || event.target !== el || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    el.click();
+  };
+  root.addEventListener("click", handleSwActions);
+  root.addEventListener("keydown", handleSwKeys);
+  root.__swActionCleanup = () => {
+    root.removeEventListener("click", handleSwActions);
+    root.removeEventListener("keydown", handleSwKeys);
+    root.__swActionCleanup = null;
+  };
+}
+
 /**
  * Hauptfunktion der ODAS-Anwendung
  */
 async function app(configdata = {}, enclosingHtmlDivElement) {
   const root = enclosingHtmlDivElement;
 
-  // 1. Cache-Prüfung: Falls Startseite in dieser Browsersitzung bereits geladen wurde
-  if (window.__swCachedAppWrapper && window.__swCachedState && !window.__swCachedState.disposed) {
+  // F-114: Cache gilt nur für denselben Container mit unveränderter Konfiguration.
+  const prev = swInstances.get(root);
+  const configKey = JSON.stringify(configdata);
+  if (prev && prev.ready && !prev.disposed && prev.configKey === configKey) {
+    prev.active = true;
     root.innerHTML = "";
-    root.appendChild(window.__swCachedAppWrapper);
+    root.appendChild(prev.wrapper);
+    prev.appendedModals.forEach(modalEl => document.body.appendChild(modalEl));
     document.body.classList.add("sw-app-fullscreen");
-
-    const offcanvasNav = document.getElementById("offcanvasNavbar");
-    if (offcanvasNav && offcanvasNav.parentElement !== document.body) {
-      document.body.appendChild(offcanvasNav);
-    }
-
-    if (window.__swCachedState.map) {
+    if (prev.map) {
       setTimeout(() => {
-        try {
-          window.__swCachedState.map.invalidateSize();
-        } catch (_) {}
+        if (isSwActive(prev) && prev.map) prev.map.invalidateSize();
       }, 50);
     }
-    ensureQrNavMenuItem(window.__swCachedState);
+    ensureGlobalOffcanvasSetup();
+    ensureQrNavMenuItem(prev);
+    registerSwActionHandler(root, prev);
     return "";
   }
 
@@ -288,29 +340,32 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
   ensureQrNavMenuItem();
 
   // Vorherige Instanz im selben DOM-Container bereinigen
-  const prev = swInstances.get(root);
   if (prev) {
     prev.disposed = true;
+    prev.active = false;
+    prev.appendedModals.forEach(detachSwModal);
     if (prev.map) {
-      try { prev.map.remove(); } catch (_) {}
+      try { prev.map.stop(); prev.map.remove(); } catch (_) {}
       prev.map = null;
     }
   }
 
-  // 3-Stufen-Geocoding: Koordinaten auflösen
-  const coords = await resolveCoordinates(configdata.ort || "Burladingen", configdata);
-
+  // F-113: Instanz vor dem ersten await registrieren, auch Geocoding kann spät enden.
   // Instanz-Zustand
   const state = {
     uid,
     root,
     config: configdata,
+    configKey,
     disposed: false,
+    active: true,
+    ready: false,
+    wrapper: null,
     appendedModals: [],
     ort: String(configdata.ort || "Burladingen").trim(),
-    lat: coords.lat,
-    lng: coords.lng,
-    coordSource: coords.source,
+    lat: null,
+    lng: null,
+    coordSource: "",
     umkreis: parseInt(configdata.umkreis || configdata.radiusKm, 10) || 25,
     standardFilter: String(configdata.standardFilter || "alle").trim(),
     allPois: [],
@@ -344,20 +399,25 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
   if (state.standardFilter === "outlet") state.filters.outlet = true;
   if (state.standardFilter === "culinary") state.filters.culinary = true;
 
-  // Globalen Detail-Opener registrieren
-  window[`swOpenDetail_${uid}`] = (poiId) => openDetailModal(state, poiId);
-  window[`swFocusPoi_${uid}`] = (poiId) => focusPoiOnMap(state, poiId);
-
-  // Initiales Layout rendern (Ladezustand)
-  renderInitialLayout(state);
-
   try {
+    const coords = await resolveCoordinates(state.ort, configdata);
+    if (!isSwActive(state)) return "";
+    state.lat = coords.lat;
+    state.lng = coords.lng;
+    state.coordSource = coords.source;
+
+    // Delegierte Detail-/Fokus-Aktionen registrieren (keine Inline-JS-Senken)
+    registerSwActionHandler(root, state);
+    renderInitialLayout(state);
+    state.wrapper = root.querySelector(".sw-fullscreen-wrapper");
+
     // Leaflet & Markercluster Skripte & Styles sicherstellen
     await ensureLeafletAndClusterLoaded();
+    if (!isSwActive(state)) return "";
 
     // Daten abrufen (DZT Relay oder Fallback-Fixture)
     const rawPois = await loadDztData(state);
-    if (state.disposed) return;
+    if (!isSwActive(state)) return "";
 
     // Normalisieren & nach Distanz sortieren
     state.allPois = rawPois.map(p => normalizeDztPoi(p, state.lat, state.lng)).filter(Boolean);
@@ -365,6 +425,7 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
 
     // Karte initialisieren
     await initLeafletMap(state);
+    if (!isSwActive(state)) return "";
 
     // Filter anwenden & UI befüllen
     applyFilters(state);
@@ -374,12 +435,10 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     hideLoadingOverlay(state);
     ensureQrNavMenuItem(state);
 
-    // Im globalen Cache für sofortigen Rücksprung sichern
-    window.__swCachedState = state;
-    window.__swCachedAppWrapper = state.root.querySelector(".sw-fullscreen-wrapper");
+    state.ready = true;
     return "";
   } catch (error) {
-    if (state.disposed) return "";
+    if (!isSwActive(state)) return "";
     hideLoadingOverlay(state);
     console.error("Fehler beim Laden der Sehenswürdigkeiten:", error);
     renderErrorMessage(state, error.message);
@@ -641,6 +700,7 @@ async function loadDztData(state) {
   // Wenn lokale Demo-POIs verfügbar sind und wir lokal laufen:
   if (isLocalhost) {
     const localDemos = await getLocalDemoPoisFallback(state);
+    if (!isSwActive(state)) return [];
     if (localDemos.length > 0) {
       console.info("Lokale Entwicklung: Verwende Demo-POIs aus assets/demo-pois.json.");
       return localDemos;
@@ -648,7 +708,8 @@ async function loadDztData(state) {
   }
 
   // SessionStorage-Cache prüfen (beschleunigt Kaltstart & Reloads auf Mobile und Desktop drastisch)
-  const cacheKey = `sw_dzt_cache_v1_${state.lat.toFixed(4)}_${state.lng.toFixed(4)}_${state.umkreis}`;
+  // F-114: Auch der Daten-Cache ist an die konfigurierte Quelle gebunden.
+  const cacheKey = `sw_dzt_cache_v2_${state.lat.toFixed(4)}_${state.lng.toFixed(4)}_${state.umkreis}_${encodeURIComponent(JSON.stringify(state.config.apiurls || []))}`;
   try {
     const cachedEntry = sessionStorage.getItem(cacheKey);
     if (cachedEntry) {
@@ -698,6 +759,7 @@ async function loadDztData(state) {
 
     const data = await response.json();
     let resultPois = [];
+    if (data && data.success === false) throw new Error("Unbekanntes Antwortformat: Die Quelle meldet einen API-Fehler.");
     if (data && data.results && Array.isArray(data.results.bindings)) {
       resultPois = data.results.bindings.map(convertSparqlBindingToPoi);
     } else if (Array.isArray(data)) {
@@ -706,8 +768,13 @@ async function loadDztData(state) {
       resultPois = data["@graph"];
     } else if (data && Array.isArray(data.things)) {
       resultPois = data.things;
+    } else {
+      // F-112: Unbekannte Struktur ist kein gültiger Leerbestand.
+      throw new Error("Unbekanntes Antwortformat: SPARQL-Bindings oder eine POI-Liste erwartet.");
     }
 
+    // F-113: Alte Ladungen dürfen auch den Daten-Cache nicht mehr verändern.
+    if (!isSwActive(state)) return [];
     // In Session-Cache für blitzschnelle Wiederverwendung ablegen
     if (resultPois && resultPois.length > 0) {
       try {
@@ -722,6 +789,7 @@ async function loadDztData(state) {
 
     return resultPois;
   } catch (err) {
+    if (!isSwActive(state)) return [];
     const fallback = await getLocalDemoPoisFallback(state);
     if (fallback.length > 0) {
       console.warn("Relay-Abruf fehlgeschlagen, verwende Demo-Fixture:", err.message);
@@ -732,16 +800,20 @@ async function loadDztData(state) {
 }
 
 async function getLocalDemoPoisFallback(state) {
+  // F-111: Demo ist ausschließlich ein lokaler Ersatz, kein Produktiv-Fehlerfallback.
+  if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") return [];
   if (Array.isArray(state.config.demoPois) && state.config.demoPois.length > 0) {
     return state.config.demoPois;
   }
-  try {
-    const res = await fetch("assets/demo-pois.json");
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
-    }
-  } catch (_) {}
+  for (const url of ["../assets/demo-pois.json", "assets/demo-pois.json"]) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch (_) {}
+  }
   return [];
 }
 
@@ -1153,7 +1225,7 @@ function renderInitialLayout(state) {
       </button>
 
       <!-- 8. Schale-4 Modal Container -->
-      <div class="modal fade" id="${u}-schale4-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal" id="${u}-schale4-modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content border-0 shadow">
             <div class="modal-header">
@@ -1185,7 +1257,7 @@ function renderInitialLayout(state) {
       </div>
 
       <!-- 9. Detail-Modal Container (Vollbild / XL Hero) -->
-      <div class="modal fade" id="${u}-detail-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal" id="${u}-detail-modal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
           <div class="modal-content border-0 shadow-lg overflow-hidden" id="${u}-detail-modal-content"></div>
         </div>
@@ -1912,7 +1984,7 @@ function updateMapMarkers(state) {
           ${poi.weatherType === "indoor" ? '<span class="badge bg-primary" style="font-size:0.68rem;">🏛️ Indoor</span>' : '<span class="badge bg-success" style="font-size:0.68rem;">🌲 Outdoor</span>'}
           ${poi.isFree ? '<span class="badge bg-light text-dark border" style="font-size:0.68rem;">🏷️ Kostenlos</span>' : ""}
         </div>
-        <button class="btn btn-sm btn-primary w-100 py-1" onclick="window.swOpenDetail_${u}('${escapeHtml(poi.id)}')">
+        <button class="btn btn-sm btn-primary w-100 py-1" data-sw-action="open-detail" data-sw-poi-id="${escapeHtml(poi.id)}">
           Details ansehen
         </button>
       </div>
@@ -1998,7 +2070,7 @@ function renderDrawerList(state) {
   let html = "";
   pagePois.forEach(poi => {
     html += `
-      <div class="sw-clean-card" onclick="window.swFocusPoi_${u}('${escapeHtml(poi.id)}')">
+      <div class="sw-clean-card" data-sw-action="focus-poi" data-sw-poi-id="${escapeHtml(poi.id)}">
         ${poi.imageUrl ? `
           <img src="${escapeHtml(poi.imageUrl)}" class="sw-card-thumb" alt="${escapeHtml(poi.name)}" loading="lazy">
         ` : `
@@ -2019,7 +2091,7 @@ function renderDrawerList(state) {
             </div>
           </div>
           <div class="sw-card-btn-row">
-            <button class="sw-btn-detail-link" onclick="event.stopPropagation(); window.swOpenDetail_${u}('${escapeHtml(poi.id)}')">
+            <button class="sw-btn-detail-link" data-sw-action="open-detail" data-sw-poi-id="${escapeHtml(poi.id)}">
               Details ansehen &raquo;
             </button>
           </div>
@@ -2062,7 +2134,7 @@ function renderCatalogGrid(state) {
 
   catalogPois.forEach((poi, idx) => {
     html += `
-      <div class="sw-catalog-card" role="button" tabindex="0" onclick="window.swOpenDetail_${u}('${escapeHtml(poi.id)}')">
+      <div class="sw-catalog-card" role="button" tabindex="0" data-sw-action="open-detail" data-sw-poi-id="${escapeHtml(poi.id)}">
         <div class="sw-catalog-img-wrap">
           ${poi.imageUrl ? `
             <img src="${escapeHtml(poi.imageUrl)}" class="sw-catalog-img" alt="${escapeHtml(poi.name)}" ${idx < 12 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted fs-1\\'>🏛️</div>'">
@@ -2085,10 +2157,10 @@ function renderCatalogGrid(state) {
             ${poi.isFree ? '<span class="sw-tag-badge sw-tag-free">🏷️ Kostenlos</span>' : ""}
           </div>
           <div class="sw-catalog-actions">
-            <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="event.stopPropagation(); window.swFocusPoi_${u}('${escapeHtml(poi.id)}')">
+            <button class="btn btn-sm btn-outline-primary flex-grow-1" data-sw-action="focus-poi" data-sw-poi-id="${escapeHtml(poi.id)}">
               Auf Karte
             </button>
-            <button class="btn btn-sm btn-primary flex-grow-1" onclick="event.stopPropagation(); window.swOpenDetail_${u}('${escapeHtml(poi.id)}')">
+            <button class="btn btn-sm btn-primary flex-grow-1" data-sw-action="open-detail" data-sw-poi-id="${escapeHtml(poi.id)}">
               Details
             </button>
           </div>
@@ -2206,7 +2278,7 @@ function openDetailModal(state, poiId) {
           <div id="${u}-collapse-raw" class="accordion-collapse collapse" data-bs-parent="#${u}-accordion-raw">
             <div class="accordion-body p-2">
               <pre class="p-2 mb-2 bg-white rounded border small" style="max-height: 200px; overflow-y: auto;"><code>${escapeHtml(rawJson)}</code></pre>
-              <button class="btn btn-sm btn-outline-secondary py-1" onclick="navigator.clipboard.writeText(${JSON.stringify(rawJson)}); this.textContent='Kopiert!';">
+              <button class="btn btn-sm btn-outline-secondary py-1" data-sw-copy="${escapeHtml(rawJson)}">
                 In Zwischenablage kopieren
               </button>
             </div>
@@ -2279,7 +2351,7 @@ function openLightbox(poi, initialIndex = 0) {
 
   // Vorhandenes Lightbox-Element entfernen falls vorhanden
   const existing = document.getElementById("sw-lightbox-overlay");
-  if (existing) existing.remove();
+  if (existing) existing.__swClose(true);
 
   const lightbox = document.createElement("div");
   lightbox.id = "sw-lightbox-overlay";
@@ -2321,9 +2393,10 @@ function openLightbox(poi, initialIndex = 0) {
   });
 
   let isTransitioning = false;
+  let closed = false;
 
   function updateImage(idx, direction = 1) {
-    if (isTransitioning) return;
+    if (closed || isTransitioning) return;
     if (idx < 0) idx = images.length - 1;
     if (idx >= images.length) idx = 0;
     if (idx === currentIndex) return;
@@ -2392,13 +2465,15 @@ function openLightbox(poi, initialIndex = 0) {
     }, 120);
   }
 
-  function closeLightbox() {
+  function closeLightbox(immediate = false) {
+    closed = true;
     lightbox.classList.remove("sw-lightbox-open");
     document.removeEventListener("keydown", handleKeydown);
-    setTimeout(() => {
-      if (lightbox && lightbox.parentNode) lightbox.remove();
-    }, 250);
+    if (immediate === true) lightbox.remove();
+    else setTimeout(() => lightbox.remove(), 250);
   }
+  // F-113: Leave und die nächste Lightbox entfernen auch den Tastaturlistener.
+  lightbox.__swClose = closeLightbox;
 
   function handleKeydown(e) {
     if (e.key === "Escape") {
@@ -2475,7 +2550,7 @@ async function openQrModal(state) {
   let modalEl = document.getElementById("sw-qr-modal");
   if (!modalEl) {
     modalEl = document.createElement("div");
-    modalEl.className = "modal fade sw-qr-modal";
+    modalEl.className = "modal sw-qr-modal";
     modalEl.id = "sw-qr-modal";
     modalEl.tabIndex = -1;
     modalEl.setAttribute("aria-hidden", "true");
@@ -2501,6 +2576,7 @@ async function openQrModal(state) {
     console.warn("QR code library load error:", err);
   }
 
+  if (!modalEl.isConnected) return; // F-113: Kein später QR-Dialog nach Leave.
   // URL dynamisch aus aktueller Instanz erzeugen (immer mit #startseite)
   const currentUrl = window.location.href.split("#")[0] + "#startseite";
 
@@ -2612,7 +2688,7 @@ function ensureQrNavMenuItem(state) {
         const oc = window.bootstrap.Offcanvas.getInstance(offcanvasEl);
         if (oc) oc.hide();
       }
-      openQrModal(state || window.__swCachedState);
+      openQrModal(swInstances.get(document.getElementById("main-content")) || state);
     });
   }
   navList.appendChild(qrLi);

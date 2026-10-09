@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "sehenswuerdigkeiten",
   "name": "Sehenswürdigkeiten",
-  "app-version": "1.8.0",
+  "app-version": "1.8.4",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -64,6 +64,7 @@
   },
   "branding-css": "",
   "api-version": "1",
+  "odas-services": ["tourismus-odg"],
   "instanz-config": {
     "seitentitel": {
       "label": "Seitentitel",
@@ -273,7 +274,22 @@
       "format": {
         "typ": "markdown"
       },
-      "default": "Die Sehenswürdigkeiten-App verarbeitet keine personenbezogenen Daten von Besucher:innen. Kartenkacheln werden datenschutzfreundlich von OpenStreetMap geladen.\n\nDatenabrufe der Sehenswürdigkeiten erfolgen über den gesicherten Store-Relay ohne Übertragung von Browserdaten an Dritte.",
+      "default": [
+        "_multiline_",
+        "Alle für die Darstellung benötigten Programmbibliotheken werden mit der App ausgeliefert. Beim Aufruf werden dafür keine externen Server kontaktiert.",
+        "",
+        "Die App verwendet keine eigenen Analyse- oder Trackingdienste. Bei direkten Browserabrufen erhalten die jeweiligen Anbieter insbesondere die IP-Adresse und technische HTTP-Header, etwa Browserkennung und gegebenenfalls einen Referrer gemäß Browsereinstellungen.",
+        "",
+        "## Beim Aufruf kontaktierte Drittanbieter",
+        "",
+        "- OpenStreetMap-Kartenkacheln: `tile.openstreetmap.org` (einschließlich Kachel-Subdomains).",
+        "- Bei unvollständigen Koordinaten und unbekanntem Ort im Offline-Verzeichnis: OSM Nominatim (`nominatim.openstreetmap.org`). Übermittelt wird der vom Betreiber konfigurierte Ortsname; die App fragt kein Geräte-GPS ab.",
+        "- POI-Bilder: die jeweiligen Bildanbieter aus den Bild-URLs der geladenen DZT-Daten. Diese Bilder laufen **nicht** über `/dzt`; ihre Hosts sind datenabhängig und nicht abschließend statisch auflistbar.",
+        "",
+        "DZT-Sachdaten lädt der Browser im Livebetrieb vom gleichursprünglichen Store-Relay /dzt. Der Store kontaktiert den DZT-Dienst serverseitig; der API-Schlüssel bleibt dort. Separate direkte Bild-, Karten- und Geocodingabrufe sind dadurch nicht ausgeschlossen.",
+        "",
+        "Ortsauflösungen und POI-Daten werden im sessionStorage des Browsers für die Sitzung zwischengespeichert. Externe Informations- und Routenplanerlinks öffnen erst nach einem Klick. Für Protokollierung und Aufbewahrung auf Store- und Drittanbieterservern gelten die Angaben der jeweiligen Betreiber; hierzu trifft die App keine pauschale Speicherzusage."
+      ],
       "erforderlich": "ja"
     },
     "fusszeile": {
