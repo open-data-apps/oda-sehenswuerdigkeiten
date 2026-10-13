@@ -596,6 +596,34 @@ function buildDztSparqlQuery(lat, lng, radiusKm) {
     con:entities ?s .`;
   }
 
+  const zielTypen = [
+    "schema:TouristAttraction",
+    "schema:OutletStore",
+    "schema:ShoppingCenter",
+    "schema:Brewery",
+    "schema:Winery",
+    "schema:Distillery",
+    "schema:FoodEstablishment",
+    "schema:BarOrPub",
+    "schema:Restaurant",
+    "schema:Museum",
+    "schema:Castle",
+    "schema:DaySpa",
+    "schema:Playground",
+    "schema:AmusementPark",
+    "schema:WaterPark",
+    "schema:Zoo",
+    "schema:PublicSwimmingPool",
+    "schema:Park",
+    "schema:NatureReserve",
+  ];
+  // R2-014: Mit Umkreis die Umkreissuche zuerst als Unterabfrage auswerten und erst
+  // danach die Typen der gefundenen Objekte prüfen. Als direkter Join prüfte der
+  // Triplestore die Typen landesweit (DZT-Endpunkt ~12 s statt ~4 s).
+  const typAuswahl = geoFilter
+    ? `\n  { SELECT DISTINCT ?s WHERE {${geoFilter}\n  } }\n  ?s a ?targetType .\n  FILTER(?targetType IN (${zielTypen.join(", ")}))`
+    : `\n  VALUES ?targetType {\n${zielTypen.map((t) => "    " + t).join("\n")}\n  }\n  ?s a ?targetType .`;
+
   return `PREFIX inst: <http://www.ontotext.com/connectors/elasticsearch/instance#>
 PREFIX con: <http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX schema: <https://schema.org/>
@@ -612,29 +640,7 @@ SELECT ?s
   (SAMPLE(?imgUrl) AS ?img)
   (GROUP_CONCAT(DISTINCT ?imgUrl; separator="|") AS ?imgs)
   (GROUP_CONCAT(DISTINCT ?type; separator=",") AS ?types)
-WHERE {${geoFilter}
-  VALUES ?targetType {
-    schema:TouristAttraction
-    schema:OutletStore
-    schema:ShoppingCenter
-    schema:Brewery
-    schema:Winery
-    schema:Distillery
-    schema:FoodEstablishment
-    schema:BarOrPub
-    schema:Restaurant
-    schema:Museum
-    schema:Castle
-    schema:DaySpa
-    schema:Playground
-    schema:AmusementPark
-    schema:WaterPark
-    schema:Zoo
-    schema:PublicSwimmingPool
-    schema:Park
-    schema:NatureReserve
-  }
-  ?s a ?targetType .
+WHERE {${typAuswahl}
   OPTIONAL { ?s a ?type }
   ?s schema:name ?nameDe .
   FILTER(lang(?nameDe) = "de" || lang(?nameDe) = "")
