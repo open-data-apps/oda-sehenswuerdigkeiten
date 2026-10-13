@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.8 - 2026-10-13
+- FIX: Standard-Fehleranzeige gibt präzisere Tipps: ein „Failed to fetch“ ohne Proxy-Kontext erhält einen Netzwerk-Hinweis statt `proxyAktiv`; der 404-Hinweis gilt nur noch für echte HTTP-404-Antworten und nennt den lokal fehlenden Proxy/Relay statt pauschal „Datensatz auf dem Portal nicht gefunden“.
+
 ## 1.8.7 - 2026-10-13
 - FIX: Fehler beim Laden zeigen die Portfolio-Standardfehleranzeige (renderOdasFehler, E0–E15) mit der tatsächlich genutzten SPARQL-Quelle statt einer eigenen Fehlerbox.
 - FIX: Gemeindeverzeichnis als dokumentierter Lazy-Singleton; der Burladingen-Ausweichwert wird nicht mehr dauerhaft gecacht.
