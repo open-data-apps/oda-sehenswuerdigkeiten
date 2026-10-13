@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "sehenswuerdigkeiten",
   "name": "Sehenswürdigkeiten",
-  "app-version": "1.8.6",
+  "app-version": "1.8.7",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -330,20 +330,6 @@
           "erforderlich": "nein"
         }
       ]
-    },
-    "proxyAktiv": {
-      "label": "ODAS Proxy aktivieren",
-      "category": "datenherkunft",
-      "format": {
-        "typ": "dropdown",
-        "optionen": [
-          "nein",
-          "ja"
-        ]
-      },
-      "default": "nein",
-      "hilfe": "Für den DZT Knowledge Graph nutzt die App den gesicherten Relay /dzt statt des ODP-Proxys.",
-      "erforderlich": "ja"
     },
     "ort": {
       "label": "Gemeinde- oder Regionsname",

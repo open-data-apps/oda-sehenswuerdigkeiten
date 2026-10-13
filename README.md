@@ -111,7 +111,6 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `standardFilter` | Initial aktiver Themenfilter | sonstiges | ja |
 | `apiurls` | Datenquellen (SPARQL-Ressource) | datenherkunft | ja |
 | `urlDaten` | Verlinkung zur Datensatz-Seite | datenherkunft | ja |
-| `proxyAktiv` | ODAS-Proxy aktivieren (ja/nein) | datenherkunft | ja |
 | `beschreibung` | Ausführliche Beschreibung / Methodik | beschreibung | ja |
 | `impressum` | Impressum | kontakt-rechtliches | ja |
 | `datenschutz` | Datenschutzerklärung | kontakt-rechtliches | ja |

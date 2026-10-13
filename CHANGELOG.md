@@ -4,6 +4,11 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.7 - 2026-10-13
+- FIX: Fehler beim Laden zeigen die Portfolio-Standardfehleranzeige (renderOdasFehler, E0–E15) mit der tatsächlich genutzten SPARQL-Quelle statt einer eigenen Fehlerbox.
+- FIX: Gemeindeverzeichnis als dokumentierter Lazy-Singleton; der Burladingen-Ausweichwert wird nicht mehr dauerhaft gecacht.
+- CHORE: Ungenutzten Konfigurationsschalter `proxyAktiv` entfernt – DZT-Daten laufen immer über den Store-Relay `/dzt`.
+
 ## 1.8.6 - 2026-10-13
 - PERF: R2-014: DZT-Abfrage wertet die Umkreissuche zuerst als Unterabfrage aus und prüft erst danach die Objekttypen; am DZT-Endpunkt ca. 13 s → 4 s bei gleichem Ergebnisumfang. Ohne Koordinaten bleibt die Abfrage unverändert.
 - TEST: Aufbau der DZT-Abfrage mit und ohne Umkreis geprüft.
