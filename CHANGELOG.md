@@ -4,6 +4,11 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.10 - 2026-10-14
+- FEAT: Mit Koordinaten sortiert die DZT-Abfrage nach Entfernung (Ziele ohne Koordinaten am Ende); geladen werden die nächstgelegenen 300 der gelieferten Treffer statt einer zufälligen Auswahl. Grenze, Paging und Antwortzeit unverändert (gemessen: Freiburg 25 km – die 300 liegen jetzt innerhalb von 2 km statt Median 17 km).
+- FIX: Hinweis, Methodik und README benennen, dass die DZT-Umkreissuche zwischen Abrufen wechselnde Treffer liefern kann.
+- CHANGE: Sitzungs-Cache-Schlüssel `v3`, damit zwischengespeicherte unsortierte Ergebnisse nicht weiterverwendet werden.
+
 ## 1.8.9 - 2026-10-14
 - FIX: Ergebnisumfang transparent: Cockpit nennt „Geladen“ und „Passend zum Filter“, der Foto-Katalog „angezeigt von gefiltert · geladen“ (höchstens 60 Karten); Hinweis, dass die DZT-Abfrage höchstens 300 Datensätze lädt, die Quelle die Auswahl bestimmt (nicht zwingend die nächstgelegenen, wechselnd zwischen Abrufen) und keine vollständige Erfassung vorliegt. Abfrage, Grenzen und Paging unverändert.
 - FIX: Leere Quelle („Keine Sehenswürdigkeiten geladen“) und leerer Filter („Keine Treffer“) werden in der Liste unterschieden; solange noch geladen wird, zeigen Hinweis, Liste und Katalog „Daten werden geladen …“ statt einer Leermeldung.

@@ -72,9 +72,10 @@ test("Grundlayout enthält die Hinweisplätze und keine Vollständigkeitsbehaupt
   const markup = state.root.innerHTML;
   assert.match(markup, /id="sw_t-result-scope"/);
   assert.match(markup, /id="sw_t-catalog-scope"/);
-  assert.match(markup, /Die DZT-Abfrage lädt höchstens 300 Datensätze\./);
-  assert.match(markup, /nicht zwingend die nächstgelegenen/);
-  assert.match(markup, /Die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis\./);
+  assert.match(markup, /Die DZT-Abfrage lädt höchstens 300 Datensätze/);
+  assert.match(markup, /die nächstgelegenen unter den Treffern, die die DZT-Umkreissuche liefert/);
+  assert.match(markup, /zwischen Abrufen wechseln/);
+  assert.match(markup, /die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis\./);
   assert.doesNotMatch(markup, /Alle Ausflugsziele im Umkreis/);
   assert.doesNotMatch(markup, /Fotogalerie aller Sehenswürdigkeiten/);
 });

@@ -647,9 +647,17 @@ function buildDztSparqlQuery(lat, lng, radiusKm) {
   const typAuswahl = geoFilter
     ? `\n  { SELECT DISTINCT ?s WHERE {${geoFilter}\n  } }\n  ?s a ?targetType .\n  FILTER(?targetType IN (${zielTypen.join(", ")}))`
     : `\n  VALUES ?targetType {\n${zielTypen.map((t) => "    " + t).join("\n")}\n  }\n  ?s a ?targetType .`;
+  // 1.8.10: Mit Umkreis die nächstgelegenen Treffer zuerst (Abstandsquadrat mit Breitenkorrektur),
+  // Ziele ohne Koordinaten ans Ende. Die DZT-Umkreissuche liefert wechselnde Kandidatenmengen;
+  // „nächstgelegen“ gilt daher für die jeweils gelieferten Treffer.
+  const breitenFaktor = (Math.cos((numLat * Math.PI) / 180) ** 2).toFixed(4);
+  const sortierung = geoFilter
+    ? `\nORDER BY DESC(BOUND(?lat)) ASC((xsd:double(?lat) - ${numLat}) * (xsd:double(?lat) - ${numLat}) + (xsd:double(?lng) - ${numLng}) * (xsd:double(?lng) - ${numLng}) * ${breitenFaktor})`
+    : "";
 
   return `PREFIX inst: <http://www.ontotext.com/connectors/elasticsearch/instance#>
 PREFIX con: <http://www.ontotext.com/connectors/elasticsearch#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <https://schema.org/>
 
 SELECT ?s 
@@ -689,7 +697,7 @@ WHERE {${typAuswahl}
     ?imgObj schema:contentUrl ?imgUrl .
   }
 }
-GROUP BY ?s
+GROUP BY ?s${sortierung}
 LIMIT 300`;
 }
 
@@ -739,7 +747,7 @@ async function loadDztData(state) {
 
   // SessionStorage-Cache prüfen (beschleunigt Kaltstart & Reloads auf Mobile und Desktop drastisch)
   // F-114: Auch der Daten-Cache ist an die konfigurierte Quelle gebunden.
-  const cacheKey = `sw_dzt_cache_v2_${state.lat.toFixed(4)}_${state.lng.toFixed(4)}_${state.umkreis}_${encodeURIComponent(JSON.stringify(state.config.apiurls || []))}`;
+  const cacheKey = `sw_dzt_cache_v3_${state.lat.toFixed(4)}_${state.lng.toFixed(4)}_${state.umkreis}_${encodeURIComponent(JSON.stringify(state.config.apiurls || []))}`;
   try {
     const cachedEntry = sessionStorage.getItem(cacheKey);
     if (cachedEntry) {
@@ -1188,7 +1196,7 @@ function renderInitialLayout(state) {
         <!-- Ergebnisumfang: geladen vs. gefiltert, Grenze der Quellabfrage -->
         <div class="sw-result-scope-note">
           <p class="mb-0" id="${u}-result-scope" aria-live="polite"></p>
-          <p class="mb-0">Die DZT-Abfrage lädt höchstens 300 Datensätze. Welche das sind, bestimmt die Quelle – nicht zwingend die nächstgelegenen; die Auswahl kann zwischen Abrufen wechseln. Die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis.</p>
+          <p class="mb-0">Die DZT-Abfrage lädt höchstens 300 Datensätze: die nächstgelegenen unter den Treffern, die die DZT-Umkreissuche liefert. Diese Treffer können zwischen Abrufen wechseln; die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis.</p>
         </div>
 
         <!-- Cockpit Scroll-Liste -->

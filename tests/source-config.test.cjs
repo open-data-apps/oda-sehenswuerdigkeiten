@@ -72,7 +72,8 @@ test("Paket, lokale Config und README nennen 300/60 und keine Vollständigkeit",
     assert.match(t, /höchstens 300 Datensätze/, name);
     assert.match(t, /höchstens 60 Karten/, name);
     assert.match(t, /keine vollständige Erfassung/, name);
-    assert.match(t, /nicht zwingend die nächstgelegenen/, name);
+    assert.match(t, /die nächstgelegenen unter den Treffern, die die DZT-Umkreissuche liefert/, name);
+    assert.match(t, /zwischen Abrufen wechseln/, name);
   }
 });
 
@@ -99,4 +100,12 @@ test("apiurls ist optional dokumentiert und kpiKontext1 behauptet keine Gesamtza
 
 test("README-Testbefehl erfasst alle Offline-Tests", () => {
   assert.ok(readme.includes("node --test tests/*.js tests/*.test.cjs"));
+});
+
+test("Sitzungs-Cache der sortierten Abfrage ist von der alten, unsortierten getrennt", async () => {
+  const keys = [];
+  const original = c.sessionStorage;
+  c.sessionStorage = { getItem: (k) => { keys.push(k); return null; }, setItem: () => {} };
+  try { await fetchZiel([{ name: "dztsparql", url: STANDARD }]); } finally { c.sessionStorage = original; }
+  assert.ok(keys.length > 0 && keys.every((k) => k.startsWith("sw_dzt_cache_v3_")), keys.join(", "));
 });

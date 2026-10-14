@@ -26,7 +26,7 @@ Die Konfiguration wird vom ODAS geladen. Die App bietet folgende Kernfunktionen:
   - Regionale Werksverkäufe & Outlets (`schema:OutletStore`, Textiltradition)
   - Kulinarik & Genussorte (Brauereien und Weingüter, `schema:Brewery`, `schema:Winery`)
 - **Vollbild Foto-Katalog**: Umschaltbare Bildergalerie der gefilterten Sehenswürdigkeiten (höchstens 60 Karten) mit großformatigen Bildern, Entfernungsangaben und Direktabsprung auf die Karte.
-- **Transparenter Ergebnisumfang**: Cockpit und Katalog nennen, wie viele Ziele geladen, passend zum Filter und angezeigt sind. Die DZT-Abfrage lädt höchstens 300 Datensätze, der Foto-Katalog zeigt höchstens 60 Karten; die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis. Welche Datensätze geladen werden, bestimmt die Quelle – nicht zwingend die nächstgelegenen; die Auswahl kann zwischen Abrufen wechseln.
+- **Transparenter Ergebnisumfang**: Cockpit und Katalog nennen, wie viele Ziele geladen, passend zum Filter und angezeigt sind. Die DZT-Abfrage lädt höchstens 300 Datensätze, der Foto-Katalog zeigt höchstens 60 Karten; die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis. Geladen werden die nächstgelegenen unter den Treffern, die die DZT-Umkreissuche liefert; diese Treffer können zwischen Abrufen wechseln.
 - **Detailansicht (Modal) & Vollbild-Lightbox**:
   - Strukturierte Details mit Öffnungszeiten, Barrierefreiheit, Anfahrtslinks und Lizenzen.
   - Klickbare Vollbild-Bildergalerie mit Touch-Wischgesten (Swipe), sanfter Richtungsanimation und Tastaturnavigation für Mehrfachbilder.
@@ -56,7 +56,7 @@ Die App lädt schema.org- und ODTA-konforme Daten aus dem **DZT Knowledge Graph*
 - **Typ:** `schema:TouristAttraction`, `schema:Place`, `odta:PointOfInterest`, `schema:Museum`, `schema:Playground`, `schema:OutletStore`, `schema:Brewery`, `schema:Winery` u. a.
 - **Attribute:** `name`, `description`, `geo` (GeoCoordinates), `address` (PostalAddress), `image` (ImageObject-Array mit Lizenzen), `isAccessibleForFree`, `openingHoursSpecification`, `amenityFeature`.
 - **Datenzugriff:** SPARQL-Endpunkt `https://proxy.opendatagermany.io/api/ts/v1/kg/sparql`, im ODAS-Livebetrieb ausschließlich über den internen Store-Relay (`/dzt?path=...`). Der DZT-API-Key verbleibt sicher im Store.
-- **Umfang:** Die Abfrage lädt höchstens 300 Datensätze (`LIMIT 300`); es gibt kein weiteres Nachladen. Ein Bestand von 300 sagt nichts darüber, wie viele Ziele es im Umkreis insgesamt gibt.
+- **Umfang:** Die Abfrage lädt höchstens 300 Datensätze (`LIMIT 300`); es gibt kein weiteres Nachladen. Mit Koordinaten sortiert sie nach Entfernung (`ORDER BY`, Ziele ohne Koordinaten am Ende), lädt also die nächstgelegenen der gelieferten Treffer. Die DZT-Umkreissuche liefert allerdings nicht bei jedem Abruf dieselben Kandidaten (gemessen 2026-10-14). Ein Bestand von 300 sagt nichts darüber, wie viele Ziele es im Umkreis insgesamt gibt.
 - **Lokale Entwicklung:** Automatische Verwendung einer realistischen Fixture (`assets/demo-pois.json`).
 
 ---
@@ -152,7 +152,7 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 | `tests/test_geocoding.js` | Unit-Tests für 3-Stufen-Geocoding (Config, Offline, Nominatim, Fallback) |
 | `tests/test_classification.js` | Unit-Tests für Klassifikation, Tags und Normalisierung |
 | `tests/test_svg_pins.js` | Unit-Tests für Vektor-SVG-Pin-Generierung |
-| `tests/sparql-query.test.cjs` | Aufbau der DZT-SPARQL-Abfrage (Umkreis-Unterabfrage, `LIMIT 300`) |
+| `tests/sparql-query.test.cjs` | Aufbau der DZT-SPARQL-Abfrage (Umkreis-Unterabfrage, Sortierung nach Entfernung, `LIMIT 300`) |
 | `tests/result-scope.test.cjs` | Ergebnisumfang: geladen, gefiltert, im Katalog angezeigt (höchstens 60) |
 | `tests/source-config.test.cjs` | Wirksame DZT-Quelle in Abruf und Fehleranzeige; Konsistenz von Paket, lokaler Config und README |
 | `tests/menu-motion.browser.cjs` | Browserprüfung der Menütransition (separat, Playwright) |
