@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "sehenswuerdigkeiten",
   "name": "Sehenswürdigkeiten",
-  "app-version": "1.8.8",
+  "app-version": "1.8.9",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -22,9 +22,13 @@
     "- **Wetterfeste Angebote:** Hallenbäder, Museen und Indoor-Ziele für jedes Wetter",
     "- **Werksverkäufe & Genuss:** Regionale Outlets (Textiltradition auf der Alb) sowie Brauereien und Gastronomie",
     "",
+    "## Methodik",
+    "",
+    "Die App fragt beim Aufruf über das ODAS-Relay die SPARQL-Schnittstelle des DZT Knowledge Graph ab: touristische Ziele wie Sehenswürdigkeiten, Museen, Spielplätze, Naturziele, Outlets und Genussorte im eingestellten Umkreis um den Ort. Die Abfrage lädt höchstens 300 Datensätze; welche das sind, bestimmt die Quelle – nicht zwingend die nächstgelegenen, und die Auswahl kann zwischen Abrufen wechseln. Die Anzeige ist deshalb keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis. Die Liste zeigt die passenden Treffer seitenweise, der Foto-Katalog höchstens 60 Karten. Filter und Suche wirken auf die geladene Auswahl; Cockpit und Katalog nennen, wie viele Ziele geladen, passend zum Filter und angezeigt sind.",
+    "",
     "## Datenquelle",
     "",
-    "- **Open Data Portal:** [{{odp.name}}]({{odp.url}})",
+    "- **Open Data Portal:** [Open Data Germany](https://open-data-germany.org/)",
     "- **Datensatz:** [DZT Knowledge Graph (POIs)](https://open-data-germany.org/)",
     "- **Ressource:** [DZT SPARQL-Endpunkt](https://proxy.opendatagermany.io/api/ts/v1/kg/sparql)",
     "",
@@ -33,6 +37,7 @@
     "Diese Anwendung basiert auf offenen Schnittstellen und ist Teil des Open Data App Stores.",
     "",
     "- [Open Data App Store](https://open-data-app-store.de/) – die Plattform für Open Data Apps",
+    "- [Open Data Apps auf GitHub](https://github.com/open-data-apps) – weitere Open Data Apps und Vorlagen",
     "- [Repository dieser App](https://github.com/open-data-apps/oda-app-sehenswuerdigkeiten) – Quellcode und Dokumentation"
   ],
   "screenshots": [
@@ -167,9 +172,13 @@
         "- **Wetterfeste Angebote:** Hallenbäder, Museen und Indoor-Ziele für jedes Wetter",
         "- **Werksverkäufe & Genuss:** Regionale Outlets (Textiltradition auf der Alb) sowie Brauereien und Gastronomie",
         "",
+        "## Methodik",
+        "",
+        "Die App fragt beim Aufruf über das ODAS-Relay die SPARQL-Schnittstelle des DZT Knowledge Graph ab: touristische Ziele wie Sehenswürdigkeiten, Museen, Spielplätze, Naturziele, Outlets und Genussorte im eingestellten Umkreis um den Ort. Die Abfrage lädt höchstens 300 Datensätze; welche das sind, bestimmt die Quelle – nicht zwingend die nächstgelegenen, und die Auswahl kann zwischen Abrufen wechseln. Die Anzeige ist deshalb keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis. Die Liste zeigt die passenden Treffer seitenweise, der Foto-Katalog höchstens 60 Karten. Filter und Suche wirken auf die geladene Auswahl; Cockpit und Katalog nennen, wie viele Ziele geladen, passend zum Filter und angezeigt sind.",
+        "",
         "## Datenquelle",
         "",
-        "- **Open Data Portal:** [{{odp.name}}]({{odp.url}})",
+        "- **Open Data Portal:** [Open Data Germany](https://open-data-germany.org/)",
         "- **Datensatz:** [DZT Knowledge Graph (POIs)](https://open-data-germany.org/)",
         "- **Ressource:** [DZT SPARQL-Endpunkt](https://proxy.opendatagermany.io/api/ts/v1/kg/sparql)",
         "",
@@ -178,6 +187,7 @@
         "Diese Anwendung basiert auf offenen Schnittstellen und ist Teil des Open Data App Stores.",
         "",
         "- [Open Data App Store](https://open-data-app-store.de/) – die Plattform für Open Data Apps",
+        "- [Open Data Apps auf GitHub](https://github.com/open-data-apps) – weitere Open Data Apps und Vorlagen",
         "- [Repository dieser App](https://github.com/open-data-apps/oda-app-sehenswuerdigkeiten) – Quellcode und Dokumentation"
       ],
       "erforderlich": "ja"
@@ -189,7 +199,7 @@
         "typ": "string",
         "laenge": 255
       },
-      "default": "Gesamtzahl der im ausgewählten Umkreis gefundenen Sehenswürdigkeiten.",
+      "default": "Anzahl der geladenen Sehenswürdigkeiten im ausgewählten Umkreis. Die DZT-Abfrage lädt höchstens 300 Datensätze; das ist keine vollständige Erfassung.",
       "erforderlich": "nein"
     },
     "kpiKontext2": {

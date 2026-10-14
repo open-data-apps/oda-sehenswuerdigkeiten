@@ -467,6 +467,15 @@ body.sw-app-fullscreen #main-content {
   background-color: #ffffff;
 }
 
+/* Ergebnisumfang: geladen vs. gefiltert und Grenze der DZT-Abfrage */
+.sw-result-scope-note {
+  padding: 6px 16px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
 .sw-cockpit-body {
   flex-grow: 1;
   overflow-y: auto;

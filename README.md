@@ -25,12 +25,13 @@ Die Konfiguration wird vom ODAS geladen. Die App bietet folgende Kernfunktionen:
   - Kostenfreier Eintritt (öffentlich zugänglich / ohne Ticket)
   - Regionale Werksverkäufe & Outlets (`schema:OutletStore`, Textiltradition)
   - Kulinarik & Genussorte (Brauereien und Weingüter, `schema:Brewery`, `schema:Winery`)
-- **Vollbild Foto-Katalog**: Umschaltbare Bildergalerie aller Sehenswürdigkeiten mit großformatigen Bildern, Entfernungsangaben und Direktabsprung auf die Karte.
+- **Vollbild Foto-Katalog**: Umschaltbare Bildergalerie der gefilterten Sehenswürdigkeiten (höchstens 60 Karten) mit großformatigen Bildern, Entfernungsangaben und Direktabsprung auf die Karte.
+- **Transparenter Ergebnisumfang**: Cockpit und Katalog nennen, wie viele Ziele geladen, passend zum Filter und angezeigt sind. Die DZT-Abfrage lädt höchstens 300 Datensätze, der Foto-Katalog zeigt höchstens 60 Karten; die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis. Welche Datensätze geladen werden, bestimmt die Quelle – nicht zwingend die nächstgelegenen; die Auswahl kann zwischen Abrufen wechseln.
 - **Detailansicht (Modal) & Vollbild-Lightbox**:
   - Strukturierte Details mit Öffnungszeiten, Barrierefreiheit, Anfahrtslinks und Lizenzen.
   - Klickbare Vollbild-Bildergalerie mit Touch-Wischgesten (Swipe), sanfter Richtungsanimation und Tastaturnavigation für Mehrfachbilder.
 - **Mobiles Bedienkonzept (Smartphones)**:
-  - Schwebender Ansichtswechsler (`🏛️ Sehenswürdigkeiten (300)` / `🗺️ Karte`) zum einfachen Umschalten zwischen Vollbild-Karte und Trefferliste.
+  - Schwebender Ansichtswechsler (`🏛️ Sehenswürdigkeiten (Trefferzahl)` / `🗺️ Karte`) zum einfachen Umschalten zwischen Vollbild-Karte und Trefferliste.
   - Kompaktes Themen-Dropdown neben der Sortierung (kein horizontales Scrollen/Quetschen).
   - Bündiger Seitenkopf ohne Element-Überlappung.
 - **Dynamischer QR-Code**: Schnelle Übertragung der aktuellen App-Ansicht auf Smartphones über einen dynamisch erzeugten QR-Code.
@@ -54,7 +55,8 @@ Die App lädt schema.org- und ODTA-konforme Daten aus dem **DZT Knowledge Graph*
 
 - **Typ:** `schema:TouristAttraction`, `schema:Place`, `odta:PointOfInterest`, `schema:Museum`, `schema:Playground`, `schema:OutletStore`, `schema:Brewery`, `schema:Winery` u. a.
 - **Attribute:** `name`, `description`, `geo` (GeoCoordinates), `address` (PostalAddress), `image` (ImageObject-Array mit Lizenzen), `isAccessibleForFree`, `openingHoursSpecification`, `amenityFeature`.
-- **Datenzugriff:** Im ODAS-Livebetrieb ausschließlich über den internen Store-Relay (`/dzt?path=...`). Der DZT-API-Key verbleibt sicher im Store.
+- **Datenzugriff:** SPARQL-Endpunkt `https://proxy.opendatagermany.io/api/ts/v1/kg/sparql`, im ODAS-Livebetrieb ausschließlich über den internen Store-Relay (`/dzt?path=...`). Der DZT-API-Key verbleibt sicher im Store.
+- **Umfang:** Die Abfrage lädt höchstens 300 Datensätze (`LIMIT 300`); es gibt kein weiteres Nachladen. Ein Bestand von 300 sagt nichts darüber, wie viele Ziele es im Umkreis insgesamt gibt.
 - **Lokale Entwicklung:** Automatische Verwendung einer realistischen Fixture (`assets/demo-pois.json`).
 
 ---
@@ -109,7 +111,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `longitude` | Geografischer Längengrad (optional, autom. Geocoding via `ort`) | sonstiges | nein |
 | `radiusKm` | Suchradius in km (5, 10, 25, 50, 100) | sonstiges | ja |
 | `standardFilter` | Initial aktiver Themenfilter | sonstiges | ja |
-| `apiurls` | Datenquellen (SPARQL-Ressource) | datenherkunft | ja |
+| `apiurls` | DZT-SPARQL-Endpunkt (`dztsparql`). Fehlt der Eintrag, ist er leer oder keine gültige URL, gilt der feste Standard `https://proxy.opendatagermany.io/api/ts/v1/kg/sparql`. Bestandsverhalten: verwendet wird der erste Eintrag namens `dztsparql` oder mit „sparql“ in der URL; davon zählt nur der Pfad nach `/api/`, abgefragt wird immer der DZT-Proxy über den Store-Relay. | datenherkunft | nein |
 | `urlDaten` | Verlinkung zur Datensatz-Seite | datenherkunft | ja |
 | `beschreibung` | Ausführliche Beschreibung / Methodik | beschreibung | ja |
 | `impressum` | Impressum | kontakt-rechtliches | ja |
@@ -150,19 +152,26 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 | `tests/test_geocoding.js` | Unit-Tests für 3-Stufen-Geocoding (Config, Offline, Nominatim, Fallback) |
 | `tests/test_classification.js` | Unit-Tests für Klassifikation, Tags und Normalisierung |
 | `tests/test_svg_pins.js` | Unit-Tests für Vektor-SVG-Pin-Generierung |
+| `tests/sparql-query.test.cjs` | Aufbau der DZT-SPARQL-Abfrage (Umkreis-Unterabfrage, `LIMIT 300`) |
+| `tests/result-scope.test.cjs` | Ergebnisumfang: geladen, gefiltert, im Katalog angezeigt (höchstens 60) |
+| `tests/source-config.test.cjs` | Wirksame DZT-Quelle in Abruf und Fehleranzeige; Konsistenz von Paket, lokaler Config und README |
+| `tests/menu-motion.browser.cjs` | Browserprüfung der Menütransition (separat, Playwright) |
+| `tests/result-scope.browser.cjs` | Browserprüfung des Ergebnisumfangs mit synthetischen 37/61/300 Datensätzen, Desktop und mobil (separat, Playwright) |
 
 ---
 
 ## Tests
 
 ```bash
-node --test tests/*.js
+node --test tests/*.js tests/*.test.cjs
 ```
 
-Die Menütransition lässt sich mit einer vorhandenen Playwright-/Chrome-Installation zusätzlich prüfen (keine zusätzliche App-Abhängigkeit):
+Keiner der Offline-Tests stellt eine DZT-Anfrage. Die `.test.cjs`-Dateien, `test_geocoding.js` und `test_inline_js_sinks.js` prüfen die ausgelieferte `app/app.js` bzw. die Paketdateien; `test_classification.js` und `test_svg_pins.js` prüfen dagegen eigene Kopien der Funktionen und belegen deshalb nicht das Verhalten des ausgelieferten Codes.
+
+Menütransition und Ergebnisumfang (synthetische 37/61/300 Datensätze, Desktop 1440×900 und mobil 390×844) lassen sich mit einer vorhandenen Playwright-/Chrome-Installation zusätzlich prüfen (keine zusätzliche App-Abhängigkeit, keine Anfragen an externe Server):
 
 ```bash
-PLAYWRIGHT_MODULE=/pfad/zur/playwright-installation node --test tests/menu-motion.browser.cjs
+PLAYWRIGHT_MODULE=/pfad/zur/playwright-installation node --test tests/menu-motion.browser.cjs tests/result-scope.browser.cjs
 ```
 
 ## Autor

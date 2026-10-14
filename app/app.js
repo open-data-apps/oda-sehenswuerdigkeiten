@@ -375,6 +375,7 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     umkreis: parseInt(configdata.umkreis || configdata.radiusKm, 10) || 25,
     standardFilter: String(configdata.standardFilter || "alle").trim(),
     allPois: [],
+    poisLoaded: false,
     filteredPois: [],
     markerMap: new Map(),
     map: null,
@@ -428,6 +429,7 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     // Normalisieren & nach Distanz sortieren
     state.allPois = rawPois.map(p => normalizeDztPoi(p, state.lat, state.lng)).filter(Boolean);
     state.allPois.sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999));
+    state.poisLoaded = true;
 
     // Karte initialisieren
     await initLeafletMap(state);
@@ -573,6 +575,22 @@ function dztApiPath(apiurl) {
   } catch (_error) {
     return "";
   }
+}
+
+/**
+ * Wirksame DZT-Quelle für Abruf und Fehleranzeige (Bestandsverhalten): erster
+ * apiurls-Eintrag namens "dztsparql" oder mit "sparql" in der URL; fehlt er, ist er leer
+ * oder keine gültige URL, gilt der feste Standard-Endpunkt. Vom Eintrag zählt nur der
+ * Pfad nach /api/ – der Host ist immer der DZT-Proxy.
+ */
+function resolveSwDztSource(configdata) {
+  const liste = Array.isArray(configdata && configdata.apiurls) ? configdata.apiurls : [];
+  const eintrag = liste.find((u) => u && (u.name === "dztsparql" || (u.url && u.url.includes("sparql"))));
+  const apiPath = eintrag && eintrag.url ? dztApiPath(eintrag.url) : "";
+  // Der Relay hängt nur den Pfad an den DZT-Host; endpointUrl nennt deshalb das tatsächliche Ziel.
+  return apiPath
+    ? { endpointUrl: `https://proxy.opendatagermany.io/api/${apiPath.replace(/^\/+/, "")}`, apiPath }
+    : { endpointUrl: "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql", apiPath: "ts/v1/kg/sparql" };
 }
 
 function buildDztSparqlQuery(lat, lng, radiusKm) {
@@ -737,14 +755,7 @@ async function loadDztData(state) {
   }
 
   // Endpunkt ermitteln (Standard: ts/v1/kg/sparql)
-  let baseEndpoint = "ts/v1/kg/sparql";
-  if (Array.isArray(state.config.apiurls)) {
-    const sparqlEntry = state.config.apiurls.find(u => u && (u.name === "dztsparql" || (u.url && u.url.includes("sparql"))));
-    if (sparqlEntry && sparqlEntry.url) {
-      const derived = dztApiPath(sparqlEntry.url);
-      if (derived) baseEndpoint = derived;
-    }
-  }
+  const baseEndpoint = resolveSwDztSource(state.config).apiPath;
 
   const query = buildDztSparqlQuery(state.lat, state.lng, state.umkreis);
   const path = `${baseEndpoint}?${new URLSearchParams({ query }).toString()}`;
@@ -1089,7 +1100,7 @@ function renderInitialLayout(state) {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
           <span class="sw-btn-qr-text">Handy</span>
         </button>
-        <button id="${u}-catalog-toggle" class="sw-btn-catalog" title="Vollbild-Fotogalerie aller Sehenswürdigkeiten öffnen">
+        <button id="${u}-catalog-toggle" class="sw-btn-catalog" title="Vollbild-Fotogalerie der gefilterten Sehenswürdigkeiten öffnen">
           <span id="${u}-catalog-btn-icon" class="sw-catalog-btn-icon">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           </span>
@@ -1174,6 +1185,12 @@ function renderInitialLayout(state) {
           </div>
         </div>
 
+        <!-- Ergebnisumfang: geladen vs. gefiltert, Grenze der Quellabfrage -->
+        <div class="sw-result-scope-note">
+          <p class="mb-0" id="${u}-result-scope" aria-live="polite"></p>
+          <p class="mb-0">Die DZT-Abfrage lädt höchstens 300 Datensätze. Welche das sind, bestimmt die Quelle – nicht zwingend die nächstgelegenen; die Auswahl kann zwischen Abrufen wechseln. Die Anzeige ist keine vollständige Erfassung aller Sehenswürdigkeiten im Umkreis.</p>
+        </div>
+
         <!-- Cockpit Scroll-Liste -->
         <div class="sw-cockpit-body" id="${u}-drawer-list">
           <div class="text-center py-5 text-muted">
@@ -1214,7 +1231,8 @@ function renderInitialLayout(state) {
         <div class="sw-catalog-header">
           <div>
             <h2 class="h4 mb-0 fw-bold" id="${u}-catalog-title">Sehenswürdigkeiten Katalog</h2>
-            <p class="text-muted small mb-0">Alle Ausflugsziele im Umkreis von ${state.umkreis} km um ${escapeHtml(state.ort)}</p>
+            <p class="text-muted small mb-0">Geladene Ausflugsziele im Umkreis von ${state.umkreis} km um ${escapeHtml(state.ort)}</p>
+            <p class="text-muted small mb-0" id="${u}-catalog-scope"></p>
           </div>
           <button id="${u}-catalog-back-btn" class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
             <span>Zurück zur Karte</span>
@@ -1746,6 +1764,16 @@ function applyFilters(state) {
   }
 }
 
+/**
+ * Ergebnisumfang: geladen (DZT-Abfrage, höchstens 300), passend zum Filter und im
+ * Foto-Katalog angezeigt (höchstens 60). Keine Aussage über einen Gesamtbestand.
+ */
+function getSwResultScope(state) {
+  const loaded = state.allPois ? state.allPois.length : 0;
+  const filtered = state.filteredPois ? state.filteredPois.length : 0;
+  return { loaded, filtered, catalogShown: Math.min(filtered, 60) };
+}
+
 function updateFilterCounts(state) {
   const u = state.uid;
   const search = state.filters.search;
@@ -1862,6 +1890,13 @@ function updateFilterCounts(state) {
   const countText = `${state.filteredPois.length}`;
 
   if (drawerCount) drawerCount.textContent = `Ergebnisse (${countText})`;
+  const scopeNote = state.root.querySelector(`#${u}-result-scope`);
+  if (scopeNote) {
+    const scope = getSwResultScope(state);
+    scopeNote.textContent = state.poisLoaded
+      ? `Geladen: ${scope.loaded} · Passend zum Filter: ${scope.filtered}.`
+      : "Daten werden geladen …";
+  }
   if (edgeCount) edgeCount.textContent = countText;
   if (mvtText) {
     const wrapper = state.root.querySelector(`#${u}-wrapper`);
@@ -2058,8 +2093,24 @@ function renderDrawerList(state) {
   if (!listEl) return;
 
   const total = state.filteredPois.length;
-  if (total === 0) {
+  if (total === 0 && !state.poisLoaded) {
     listEl.innerHTML = `
+      <div class="text-center py-5 text-muted">
+        <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+        <div>Lade Sehenswürdigkeiten…</div>
+      </div>
+    `;
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
+    return;
+  }
+  if (total === 0) {
+    listEl.innerHTML = state.allPois.length === 0 ? `
+      <div class="text-center py-5 text-muted">
+        <div class="h5 mb-2">Keine Sehenswürdigkeiten geladen</div>
+        <p class="small mb-0">Die DZT-Abfrage hat für diesen Umkreis keine Datensätze geliefert.</p>
+      </div>
+    ` : `
       <div class="text-center py-5 text-muted">
         <div class="h5 mb-2">Keine Treffer</div>
         <p class="small mb-0">Bitte Filtereinstellungen anpassen oder Suchbegriff ändern.</p>
@@ -2124,11 +2175,23 @@ function renderCatalogGrid(state) {
   const u = state.uid;
   const gridEl = state.root.querySelector(`#${u}-catalog-grid`);
   const titleEl = state.root.querySelector(`#${u}-catalog-title`);
+  const scopeEl = state.root.querySelector(`#${u}-catalog-scope`);
 
   if (!gridEl) return;
 
-  const total = state.filteredPois.length;
-  if (titleEl) titleEl.textContent = `Sehenswürdigkeiten Katalog (${total})`;
+  const scope = getSwResultScope(state);
+  const total = scope.filtered;
+  if (titleEl) titleEl.textContent = state.poisLoaded ? `Sehenswürdigkeiten Katalog (${scope.catalogShown})` : "Sehenswürdigkeiten Katalog";
+  if (scopeEl) {
+    scopeEl.textContent = state.poisLoaded
+      ? `${scope.catalogShown} von ${scope.filtered} gefilterten Treffern angezeigt · ${scope.loaded} geladen. ` +
+        "Im Foto-Katalog werden höchstens 60 Karten angezeigt."
+      : "Daten werden geladen …";
+  }
+  if (!state.poisLoaded) {
+    gridEl.innerHTML = "";
+    return;
+  }
 
   if (total === 0) {
     gridEl.innerHTML = `
@@ -2142,7 +2205,7 @@ function renderCatalogGrid(state) {
 
   let html = "";
   // Zeige im Katalog bis zu 60 Ziele auf einmal
-  const catalogPois = state.filteredPois.slice(0, 60);
+  const catalogPois = state.filteredPois.slice(0, scope.catalogShown);
 
   catalogPois.forEach((poi, idx) => {
     html += `
@@ -2734,11 +2797,8 @@ if (typeof document !== "undefined") {
 function renderErrorMessage(state, message) {
   // Portfolio-Standardfehleranzeige (Variante A, E0–E15) statt eigener Fehlerbox.
   // Dieselbe Quellenwahl wie loadDztData: ohne gültigen Eintrag gilt der Standardendpunkt.
-  const eintrag = Array.isArray(state.config && state.config.apiurls)
-    ? state.config.apiurls.find((u) => u && (u.name === "dztsparql" || (u.url && u.url.includes("sparql"))))
-    : null;
   renderOdasFehler(state.root, new Error(message), {
-    url: eintrag && dztApiPath(eintrag.url) ? eintrag.url : "https://proxy.opendatagermany.io/api/ts/v1/kg/sparql",
+    url: resolveSwDztSource(state.config).endpointUrl,
     label: "DZT-Wissensdatenbank (SPARQL)",
     typLabel: "Wissensdatenbank (SPARQL)",
     erwarteterTyp: "sparql",

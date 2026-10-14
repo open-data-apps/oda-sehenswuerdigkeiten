@@ -4,6 +4,13 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.9 - 2026-10-14
+- FIX: Ergebnisumfang transparent: Cockpit nennt „Geladen“ und „Passend zum Filter“, der Foto-Katalog „angezeigt von gefiltert · geladen“ (höchstens 60 Karten); Hinweis, dass die DZT-Abfrage höchstens 300 Datensätze lädt, die Quelle die Auswahl bestimmt (nicht zwingend die nächstgelegenen, wechselnd zwischen Abrufen) und keine vollständige Erfassung vorliegt. Abfrage, Grenzen und Paging unverändert.
+- FIX: Leere Quelle („Keine Sehenswürdigkeiten geladen“) und leerer Filter („Keine Treffer“) werden in der Liste unterschieden; solange noch geladen wird, zeigen Hinweis, Liste und Katalog „Daten werden geladen …“ statt einer Leermeldung.
+- CHANGE: DZT-Quellenwahl für Abruf und Fehleranzeige in `resolveSwDztSource()` zusammengeführt (Auswahl unverändert); die Fehleranzeige nennt jetzt den tatsächlich abgefragten DZT-Endpunkt, auch wenn ein Eintrag einen anderen Host enthält.
+- DOCS: Beschreibung um Methodik mit 300/60-Grenzen ergänzt, Portal-Ebene „Open Data Germany“; lokale Config spiegelt die Paketbeschreibung (SPARQL-Endpunkt statt Query API v2); `kpiKontext1` beschreibt den geladenen Bestand; Link „Open Data Apps auf GitHub“ ergänzt; README: `apiurls` optional mit Standard-Endpunkt, vollständiger Testbefehl.
+- TEST: `tests/result-scope.test.cjs` und `tests/source-config.test.cjs` gegen die ausgelieferte `app/app.js` und die Paketdateien.
+
 ## 1.8.8 - 2026-10-13
 - FIX: Standard-Fehleranzeige gibt präzisere Tipps: ein „Failed to fetch“ ohne Proxy-Kontext erhält einen Netzwerk-Hinweis statt `proxyAktiv`; der 404-Hinweis gilt nur noch für echte HTTP-404-Antworten und nennt den lokal fehlenden Proxy/Relay statt pauschal „Datensatz auf dem Portal nicht gefunden“.
 
