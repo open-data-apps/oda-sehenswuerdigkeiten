@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.11 - 2026-10-14
+- FIX: Entfernungssortierung robuster: `ORDER BY ASC(COALESCE(<Abstand>, 1e9))` statt `DESC(BOUND(?lat))`; Ziele mit fehlenden **oder nicht numerischen** Koordinaten landen am Ende (ein Ausdrucksfehler sortierte in SPARQL bisher vor alle Zahlen). Gemessen am DZT-Endpunkt: HTTP 200, Entfernungen aufsteigend, Antwortzeit unverändert.
+- CHORE: Ungenutzte Bibliothek `app/vendor/chartjs/` entfernt; fehlende MIT-Lizenzdatei `app/vendor/qrcode/LICENSE` ergänzt (Hash laut Vendor-Manifest).
+
 ## 1.8.10 - 2026-10-14
 - FEAT: Mit Koordinaten sortiert die DZT-Abfrage nach Entfernung (Ziele ohne Koordinaten am Ende); geladen werden die nächstgelegenen 300 der gelieferten Treffer statt einer zufälligen Auswahl. Grenze, Paging und Antwortzeit unverändert (gemessen: Freiburg 25 km – die 300 liegen jetzt innerhalb von 2 km statt Median 17 km).
 - FIX: Hinweis, Methodik und README benennen, dass die DZT-Umkreissuche zwischen Abrufen wechselnde Treffer liefern kann.

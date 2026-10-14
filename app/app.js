@@ -647,12 +647,14 @@ function buildDztSparqlQuery(lat, lng, radiusKm) {
   const typAuswahl = geoFilter
     ? `\n  { SELECT DISTINCT ?s WHERE {${geoFilter}\n  } }\n  ?s a ?targetType .\n  FILTER(?targetType IN (${zielTypen.join(", ")}))`
     : `\n  VALUES ?targetType {\n${zielTypen.map((t) => "    " + t).join("\n")}\n  }\n  ?s a ?targetType .`;
-  // 1.8.10: Mit Umkreis die nächstgelegenen Treffer zuerst (Abstandsquadrat mit Breitenkorrektur),
-  // Ziele ohne Koordinaten ans Ende. Die DZT-Umkreissuche liefert wechselnde Kandidatenmengen;
+  // 1.8.10: Mit Umkreis die nächstgelegenen Treffer zuerst (Abstandsquadrat mit Breitenkorrektur).
+  // 1.8.11: COALESCE(…, 1e9) setzt fehlende und nicht numerische Koordinaten ans Ende – ein
+  // Ausdrucksfehler im ORDER BY sortiert in SPARQL sonst vor alle Zahlen.
+  // Die DZT-Umkreissuche liefert wechselnde Kandidatenmengen;
   // „nächstgelegen“ gilt daher für die jeweils gelieferten Treffer.
   const breitenFaktor = (Math.cos((numLat * Math.PI) / 180) ** 2).toFixed(4);
   const sortierung = geoFilter
-    ? `\nORDER BY DESC(BOUND(?lat)) ASC((xsd:double(?lat) - ${numLat}) * (xsd:double(?lat) - ${numLat}) + (xsd:double(?lng) - ${numLng}) * (xsd:double(?lng) - ${numLng}) * ${breitenFaktor})`
+    ? `\nORDER BY ASC(COALESCE((xsd:double(?lat) - ${numLat}) * (xsd:double(?lat) - ${numLat}) + (xsd:double(?lng) - ${numLng}) * (xsd:double(?lng) - ${numLng}) * ${breitenFaktor}, 1e9))`
     : "";
 
   return `PREFIX inst: <http://www.ontotext.com/connectors/elasticsearch/instance#>

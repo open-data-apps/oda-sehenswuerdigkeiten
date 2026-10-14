@@ -56,7 +56,7 @@ Die App lädt schema.org- und ODTA-konforme Daten aus dem **DZT Knowledge Graph*
 - **Typ:** `schema:TouristAttraction`, `schema:Place`, `odta:PointOfInterest`, `schema:Museum`, `schema:Playground`, `schema:OutletStore`, `schema:Brewery`, `schema:Winery` u. a.
 - **Attribute:** `name`, `description`, `geo` (GeoCoordinates), `address` (PostalAddress), `image` (ImageObject-Array mit Lizenzen), `isAccessibleForFree`, `openingHoursSpecification`, `amenityFeature`.
 - **Datenzugriff:** SPARQL-Endpunkt `https://proxy.opendatagermany.io/api/ts/v1/kg/sparql`, im ODAS-Livebetrieb ausschließlich über den internen Store-Relay (`/dzt?path=...`). Der DZT-API-Key verbleibt sicher im Store.
-- **Umfang:** Die Abfrage lädt höchstens 300 Datensätze (`LIMIT 300`); es gibt kein weiteres Nachladen. Mit Koordinaten sortiert sie nach Entfernung (`ORDER BY`, Ziele ohne Koordinaten am Ende), lädt also die nächstgelegenen der gelieferten Treffer. Die DZT-Umkreissuche liefert allerdings nicht bei jedem Abruf dieselben Kandidaten (gemessen 2026-10-14). Ein Bestand von 300 sagt nichts darüber, wie viele Ziele es im Umkreis insgesamt gibt.
+- **Umfang:** Die Abfrage lädt höchstens 300 Datensätze (`LIMIT 300`); es gibt kein weiteres Nachladen. Mit Koordinaten sortiert sie nach Entfernung (`ORDER BY`, Ziele ohne oder mit nicht numerischen Koordinaten am Ende), lädt also die nächstgelegenen der gelieferten Treffer. Die DZT-Umkreissuche liefert allerdings nicht bei jedem Abruf dieselben Kandidaten (gemessen 2026-10-14). Ein Bestand von 300 sagt nichts darüber, wie viele Ziele es im Umkreis insgesamt gibt.
 - **Lokale Entwicklung:** Automatische Verwendung einer realistischen Fixture (`assets/demo-pois.json`).
 
 ---
@@ -123,7 +123,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 
 ## Beim Aufruf kontaktierte Drittanbieter
 
-Beim Aufruf dieser App werden keine externen Server für Programmbibliotheken kontaktiert; alle Bibliotheken (Bootstrap, Leaflet, MarkerCluster, QRCode) werden lokal aus `app/vendor/` ausgeliefert.
+Beim Aufruf dieser App werden keine externen Server für Programmbibliotheken kontaktiert; alle Bibliotheken (Bootstrap, Leaflet, MarkerCluster, QRCode) werden lokal aus `app/vendor/` ausgeliefert. Die MIT-Lizenz der QRCode-Bibliothek (qrcode-generator) liegt unter `app/vendor/qrcode/LICENSE`.
 
 **Direkte Browserkontakte:**
 - OpenStreetMap-Kartenkacheln: `tile.openstreetmap.org` (einschließlich Kachel-Subdomains).

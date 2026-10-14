@@ -17,9 +17,12 @@ test("mit Koordinaten: Umkreissuche als Unterabfrage vor der Typprüfung", () =>
   assert.ok(q.indexOf("con:entities ?s") < q.indexOf("?s a ?targetType"));
   assert.match(q, /FILTER\(\?targetType IN \(schema:TouristAttraction, [^)]*schema:NatureReserve\)\)/);
   assert.doesNotMatch(q, /VALUES \?targetType/);
-  // 1.8.10: die nächstgelegenen Treffer zuerst, Ziele ohne Koordinaten ans Ende, Grenze bleibt 300.
+  // 1.8.10: die nächstgelegenen Treffer zuerst, Grenze bleibt 300.
+  // 1.8.11: COALESCE(…, 1e9) – fehlende UND nicht numerische Koordinaten (Ausdrucksfehler) sortieren ans Ende;
+  // ein Fehler im ORDER-BY-Ausdruck allein sortiert in SPARQL vor alle Zahlen.
   assert.match(q, /^PREFIX xsd: <http:\/\/www\.w3\.org\/2001\/XMLSchema#>$/m);
-  assert.match(q, /GROUP BY \?s\nORDER BY DESC\(BOUND\(\?lat\)\) ASC\(\(xsd:double\(\?lat\) - 48\.7406\) \* \(xsd:double\(\?lat\) - 48\.7406\) \+ \(xsd:double\(\?lng\) - 9\.3108\) \* \(xsd:double\(\?lng\) - 9\.3108\) \* 0\.43\d*\)\nLIMIT 300$/);
+  assert.match(q, /GROUP BY \?s\nORDER BY ASC\(COALESCE\(\(xsd:double\(\?lat\) - 48\.7406\) \* \(xsd:double\(\?lat\) - 48\.7406\) \+ \(xsd:double\(\?lng\) - 9\.3108\) \* \(xsd:double\(\?lng\) - 9\.3108\) \* 0\.43\d*, 1e9\)\)\nLIMIT 300$/);
+  assert.doesNotMatch(q, /BOUND\(\?lat\)/);
 });
 
 test("ohne Koordinaten: unveränderte Typauswahl ohne Unterabfrage", () => {
