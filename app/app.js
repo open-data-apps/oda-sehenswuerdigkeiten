@@ -285,6 +285,8 @@ function registerSwActionHandler(root, state) {
   registerSwCopyHandler();
   if (typeof root.__swActionCleanup === "function") root.__swActionCleanup();
   const handleSwActions = (event) => {
+    // Links in Beschreibungen (z. B. in der Katalogkarte) öffnen nur ihr Ziel, nicht das Detail-Modal.
+    if (event.target instanceof Element && event.target.closest("a[href]")) return;
     const el = event.target instanceof Element ? event.target.closest("[data-sw-action]") : null;
     if (!el) return;
     const poiId = el.dataset.swPoiId || "";

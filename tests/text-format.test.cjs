@@ -42,3 +42,20 @@ test("Markdown-Links [Text](https://…) werden klickbar, nur http(s), HTML blei
   assert.equal(c.formatDztText('[a](https://x.de/"onmouseover="y)'),
     '<a href="https://x.de/&quot;onmouseover=&quot;y" target="_blank" rel="noopener noreferrer">a</a>');
 });
+
+test("Klick auf einen Link in der Katalogkarte öffnet kein Detail-Modal, Klick auf die Karte schon", () => {
+  c.Element = class Element {};
+  const handlers = {};
+  const root = { addEventListener: (type, fn) => { handlers[type] = fn; }, removeEventListener: noop };
+  const opened = [];
+  c.openDetailModal = (_state, id) => opened.push(id);
+  c.registerSwActionHandler(root, {});
+  const card = Object.assign(new c.Element(), { dataset: { swAction: "open-detail", swPoiId: "p1" } });
+  const target = (selfMatch) => Object.assign(new c.Element(), {
+    closest: (sel) => (sel === "a[href]" ? (selfMatch ? {} : null) : sel === "[data-sw-action]" ? card : null),
+  });
+  handlers.click({ target: target(true) });
+  assert.deepEqual(opened, []);
+  handlers.click({ target: target(false) });
+  assert.deepEqual(opened, ["p1"]);
+});

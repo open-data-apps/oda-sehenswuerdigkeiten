@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.16 - 2026-10-15
+- FIX: Ein Klick auf einen Link in der Beschreibung einer Katalogkarte öffnet nur noch das Linkziel in neuem Tab und nicht zusätzlich die Detailansicht.
+
 ## 1.8.15 - 2026-10-15
 - FIX: Kopfzeile bei 360 px ohne Überlauf (Template): Logo- und Burger-Spalte passen sich der Breite an, das Menü-Symbol ragt nicht mehr über den rechten Rand. Keine Änderung an App-Code oder Konfiguration.
 
