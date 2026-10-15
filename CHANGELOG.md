@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.13 - 2026-10-15
+- DOCS: Neue Store-Screenshots: je drei Desktop- (1440 × 1000) und Mobile-Aufnahmen (390 × 844) der aktuellen App, aufgenommen auf der Dev-Instanz. Bisherige Bilder nach `docs/screenshots/archive/2026-10-13/` verschoben. Keine Änderung an App-Code oder Konfiguration.
+
 ## 1.8.12 - 2026-10-15
 - FIX: Beschreibungen aus dem DZT zeigen im Foto-Katalog und in der Detailansicht `**fett**` als Fettdruck statt roher Sternchen; lose Sternchen und Markdown-Überschriftenzeichen (`###`) werden entfernt. Der Text bleibt vollständig HTML-escaped.
 - TEST: `tests/text-format.test.cjs` gegen die ausgelieferte `app/app.js`.
