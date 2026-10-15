@@ -2233,7 +2233,7 @@ function renderCatalogGrid(state) {
         <div class="sw-catalog-body">
           <h3 class="sw-catalog-card-title">${escapeHtml(poi.name)}</h3>
           <div class="text-muted small mb-2">${poi.city ? escapeHtml(poi.city) : ""} ${poi.region ? `(${escapeHtml(poi.region)})` : ""}</div>
-          <p class="sw-catalog-card-desc">${escapeHtml(poi.description || "Keine Kurzbeschreibung verfügbar.")}</p>
+          <p class="sw-catalog-card-desc">${formatDztText(poi.description || "Keine Kurzbeschreibung verfügbar.")}</p>
           <div class="sw-badge-row">
             ${poi.isOutlet ? '<span class="sw-tag-badge sw-tag-outlet">🛍️ Outlet</span>' : ""}
             ${poi.isCulinary ? '<span class="sw-tag-badge sw-tag-culinary">🍷 Genuss</span>' : ""}
@@ -2319,7 +2319,7 @@ function openDetailModal(state, poiId) {
       <div class="mb-4">
         <h5 class="fw-bold mb-2">Über dieses Ausflugsziel</h5>
         <p class="text-secondary fs-6" style="line-height: 1.7;">
-          ${escapeHtml(poi.description || "Für dieses Ziel liegt im DZT Knowledge Graph keine ausführliche Beschreibung vor.")}
+          ${formatDztText(poi.description || "Für dieses Ziel liegt im DZT Knowledge Graph keine ausführliche Beschreibung vor.")}
         </p>
       </div>
 
@@ -2960,6 +2960,15 @@ function renderOdasFehler(container, error, kontext = {}) {
   const titel = kontext.leer ? "Keine Datensätze gefunden." : info.titel;
   const alertClass = kontext.leer ? "alert-info" : info.alertClass;
   container.innerHTML = `<div class="alert ${alertClass}" role="alert"><strong>${escapeHtml(titel)}</strong><p class="mb-1">${escapeHtml(info.hinweis)}</p>${urlZeile}<details class="small"><summary>Details</summary><code>${escapeHtml(info.detail || String(error))}</code></details></div>`;
+}
+
+// DZT-Beschreibungen enthalten Markdown-Reste: erst escapen, dann nur **fett** in <strong>
+// umwandeln; lose Sternchen und Überschriftenzeichen am Zeilenanfang entfernen.
+function formatDztText(str) {
+  return escapeHtml(str)
+    .replace(/^[ \t]*#{1,6}[ \t]+/gm, "")
+    .replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*\*/g, "");
 }
 
 function escapeHtml(str) {

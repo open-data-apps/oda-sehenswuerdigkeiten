@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.12 - 2026-10-15
+- FIX: Beschreibungen aus dem DZT zeigen im Foto-Katalog und in der Detailansicht `**fett**` als Fettdruck statt roher Sternchen; lose Sternchen und Markdown-Überschriftenzeichen (`###`) werden entfernt. Der Text bleibt vollständig HTML-escaped.
+- TEST: `tests/text-format.test.cjs` gegen die ausgelieferte `app/app.js`.
+
 ## 1.8.11 - 2026-10-14
 - FIX: Entfernungssortierung robuster: `ORDER BY ASC(COALESCE(<Abstand>, 1e9))` statt `DESC(BOUND(?lat))`; Ziele mit fehlenden **oder nicht numerischen** Koordinaten landen am Ende (ein Ausdrucksfehler sortierte in SPARQL bisher vor alle Zahlen). Gemessen am DZT-Endpunkt: HTTP 200, Entfernungen aufsteigend, Antwortzeit unverändert.
 - CHORE: Ungenutzte Bibliothek `app/vendor/chartjs/` entfernt; fehlende MIT-Lizenzdatei `app/vendor/qrcode/LICENSE` ergänzt (Hash laut Vendor-Manifest).

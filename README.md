@@ -155,6 +155,7 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 | `tests/sparql-query.test.cjs` | Aufbau der DZT-SPARQL-Abfrage (Umkreis-Unterabfrage, Sortierung nach Entfernung, `LIMIT 300`) |
 | `tests/result-scope.test.cjs` | Ergebnisumfang: geladen, gefiltert, im Katalog angezeigt (höchstens 60) |
 | `tests/source-config.test.cjs` | Wirksame DZT-Quelle in Abruf und Fehleranzeige; Konsistenz von Paket, lokaler Config und README |
+| `tests/text-format.test.cjs` | Darstellung der DZT-Beschreibungen (Fettdruck statt Markdown-Sternchen, HTML escaped) |
 | `tests/menu-motion.browser.cjs` | Browserprüfung der Menütransition (separat, Playwright) |
 | `tests/result-scope.browser.cjs` | Browserprüfung des Ergebnisumfangs mit synthetischen 37/61/300 Datensätzen, Desktop und mobil (separat, Playwright) |
 
