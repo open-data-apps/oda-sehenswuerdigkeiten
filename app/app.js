@@ -427,7 +427,7 @@ async function app(configdata = {}, enclosingHtmlDivElement) {
     if (!isSwActive(state)) return "";
 
     // Normalisieren & nach Distanz sortieren
-    state.allPois = rawPois.map(p => normalizeDztPoi(p, state.lat, state.lng)).filter(Boolean);
+    state.allPois = rawPois.map(p => normalizeDztPoi(p, state.lat, state.lng)).filter((p) => p && (p.distanceKm == null || p.distanceKm <= state.umkreis));
     state.allPois.sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999));
     state.poisLoaded = true;
 
@@ -2033,7 +2033,7 @@ function updateMapMarkers(state) {
       <div style="min-width: 210px; max-width: 250px;">
         ${poi.imageUrl ? `<img src="${escapeHtml(poi.imageUrl)}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:8px;">` : ""}
         <h6 class="fw-bold mb-1" style="font-size:0.9rem;">${escapeHtml(poi.name)}</h6>
-        <div class="text-muted small mb-2">${escapeHtml(poi.city || "")} ${poi.distanceKm !== null ? `&bull; <strong>${poi.distanceKm} km</strong>` : ""}</div>
+        <div class="text-muted small mb-2">${[poi.city && escapeHtml(poi.city), poi.distanceKm !== null && `<strong>${poi.distanceKm} km</strong>`].filter(Boolean).join(" &bull; ")}</div>
         <div class="d-flex flex-wrap gap-1 mb-2">
           ${poi.isOutlet ? '<span class="badge" style="background:#c026d3; color:#fff; font-size:0.68rem;">🛍️ Outlet</span>' : ""}
           ${poi.isCulinary ? '<span class="badge" style="background:#b91c1c; color:#fff; font-size:0.68rem;">🍷 Genuss</span>' : ""}
@@ -2153,7 +2153,7 @@ function renderDrawerList(state) {
           <div>
             <div class="sw-card-heading" title="${escapeHtml(poi.name)}">${escapeHtml(poi.name)}</div>
             <div class="sw-card-meta">
-              ${poi.city ? escapeHtml(poi.city) : ""} ${poi.distanceKm !== null ? `&bull; <strong>${poi.distanceKm} km</strong>` : ""}
+              ${[poi.city && escapeHtml(poi.city), poi.distanceKm !== null && `<strong>${poi.distanceKm} km</strong>`].filter(Boolean).join(" &bull; ")}
             </div>
             <div class="sw-badge-row">
               ${poi.isOutlet ? '<span class="sw-tag-badge sw-tag-outlet">🛍️ Outlet</span>' : ""}
@@ -2288,8 +2288,7 @@ function openDetailModal(state, poiId) {
         <div class="sw-detail-hero-caption">
           <h2 class="sw-detail-hero-title">${escapeHtml(poi.name)}</h2>
           <div class="sw-detail-hero-subtitle">
-            ${poi.city ? escapeHtml(poi.city) : ""} ${poi.region ? `(${escapeHtml(poi.region)})` : ""}
-            ${poi.distanceKm !== null ? ` &bull; <strong>${poi.distanceKm} km entfernt</strong>` : ""}
+            ${[[poi.city && escapeHtml(poi.city), poi.region && `(${escapeHtml(poi.region)})`].filter(Boolean).join(" "), poi.distanceKm !== null && `<strong>${poi.distanceKm} km entfernt</strong>`].filter(Boolean).join(" &bull; ")}
           </div>
         </div>
         ${poi.imageCopyright || poi.imageLicense ? `
@@ -2968,6 +2967,7 @@ function formatDztText(str) {
   return escapeHtml(str)
     .replace(/^[ \t]*#{1,6}[ \t]+/gm, "")
     .replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\*\*/g, "");
 }
 

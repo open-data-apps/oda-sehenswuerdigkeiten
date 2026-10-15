@@ -4,6 +4,13 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.14 - 2026-10-15
+- FIX: Die Liste, Karte und der Katalog zeigen nur noch Ziele innerhalb des eingestellten Umkreises; Ziele, die die DZT-Umkreissuche knapp außerhalb liefert, werden nach der Entfernungsberechnung ausgeblendet („Geladen“ zählt die Ziele im Umkreis, die Abfrage selbst lädt weiterhin höchstens 300 Datensätze).
+- FIX: Links in DZT-Beschreibungen (`[Text](https://…)`) sind klickbar und öffnen in neuem Tab; erlaubt sind nur http(s)-Adressen.
+- FIX: Banner-Titel ist standardmäßig leer und zeigt dann „Titel + Ort“; bisher blieb der Ort Burladingen auf anderen Instanzen im Banner stehen.
+- FIX: Fehlt bei einem Ziel der Ortsname, steht keine einzelne Raute mehr vor der Entfernung („· 6,1 km“).
+- FIX: Mobil überdeckt die Quellen-Pille nicht mehr den Karte/Liste-Umschalter, das ✕ im aktiven Filter liegt neben dem Pfeil, und das Titelbild im Detail ist höher.
+
 ## 1.8.13 - 2026-10-15
 - DOCS: Neue Store-Screenshots: je drei Desktop- (1440 × 1000) und Mobile-Aufnahmen (390 × 844) der aktuellen App, aufgenommen auf der Dev-Instanz. Bisherige Bilder nach `docs/screenshots/archive/2026-10-13/` verschoben. Keine Änderung an App-Code oder Konfiguration.
 

@@ -30,3 +30,15 @@ test("Foto-Katalog zeigt Beschreibungen formatiert", () => {
 test("Detailansicht nutzt die Formatierung für die Beschreibung", () => {
   assert.match(source, /formatDztText\(poi\.description \|\| "Für dieses Ziel/);
 });
+
+test("Markdown-Links [Text](https://…) werden klickbar, nur http(s), HTML bleibt escaped", () => {
+  assert.equal(c.formatDztText("Mehr unter [Burg Hohenzollern](https://www.burg-hohenzollern.com/de) heute"),
+    'Mehr unter <a href="https://www.burg-hohenzollern.com/de" target="_blank" rel="noopener noreferrer">Burg Hohenzollern</a> heute');
+  assert.equal(c.formatDztText("**[Fett](http://a.de)**"), '<strong><a href="http://a.de" target="_blank" rel="noopener noreferrer">Fett</a></strong>');
+  assert.equal(c.formatDztText("[x](javascript:alert(1))"), "[x](javascript:alert(1))");
+  assert.equal(c.formatDztText("[x](data:text/html,a)"), "[x](data:text/html,a)");
+  assert.equal(c.formatDztText("[x](//evil.de)"), "[x](//evil.de)");
+  // Anführungszeichen sind schon escaped und können das href-Attribut nicht verlassen
+  assert.equal(c.formatDztText('[a](https://x.de/"onmouseover="y)'),
+    '<a href="https://x.de/&quot;onmouseover=&quot;y" target="_blank" rel="noopener noreferrer">a</a>');
+});

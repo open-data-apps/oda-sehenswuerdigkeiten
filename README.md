@@ -104,7 +104,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `titel` | Hauptüberschrift der App | allgemein | ja |
 | `seitentitel` | Browser-Tab-Titel | allgemein | ja |
 | `icon` | App-Icon | allgemein | ja |
-| `bannerTitel` | Titel im schwebenden Top-Banner | allgemein | nein |
+| `bannerTitel` | Titel im schwebenden Top-Banner (leer = Titel + Ort) | allgemein | nein |
 | `bannerUntertitel` | Untertitel im schwebenden Top-Banner | allgemein | nein |
 | `ort` | Gemeindename / Regionsbezeichnung (dient auch zur autom. Koordinaten-Ermittlung) | sonstiges | ja |
 | `latitude` | Geografischer Breitengrad (optional, autom. Geocoding via `ort`) | sonstiges | nein |
@@ -155,7 +155,8 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 | `tests/sparql-query.test.cjs` | Aufbau der DZT-SPARQL-Abfrage (Umkreis-Unterabfrage, Sortierung nach Entfernung, `LIMIT 300`) |
 | `tests/result-scope.test.cjs` | Ergebnisumfang: geladen, gefiltert, im Katalog angezeigt (höchstens 60) |
 | `tests/source-config.test.cjs` | Wirksame DZT-Quelle in Abruf und Fehleranzeige; Konsistenz von Paket, lokaler Config und README |
-| `tests/text-format.test.cjs` | Darstellung der DZT-Beschreibungen (Fettdruck statt Markdown-Sternchen, HTML escaped) |
+| `tests/text-format.test.cjs` | Darstellung der DZT-Beschreibungen (Fettdruck statt Markdown-Sternchen, Markdown-Links nur mit http(s), HTML escaped) |
+| `tests/radius-meta.test.cjs` | Umkreisgrenze (kein Ziel jenseits des Radius), Meta-Zeile ohne Ortsname |
 | `tests/menu-motion.browser.cjs` | Browserprüfung der Menütransition (separat, Playwright) |
 | `tests/result-scope.browser.cjs` | Browserprüfung des Ergebnisumfangs mit synthetischen 37/61/300 Datensätzen, Desktop und mobil (separat, Playwright) |
 

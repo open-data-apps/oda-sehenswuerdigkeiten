@@ -1635,10 +1635,11 @@ body:not(.sw-app-fullscreen) footer.footer {
     background-color: #eff6ff !important;
     color: #1d4ed8 !important;
     font-weight: 600 !important;
+    padding-right: 48px !important;
   }
   .sw-filter-select-reset {
     position: absolute !important;
-    right: 22px !important;
+    right: 30px !important;
     background: transparent !important;
     border: none !important;
     color: #64748b !important;
@@ -1683,7 +1684,7 @@ body:not(.sw-app-fullscreen) footer.footer {
 
   /* Detail-Modal & Katalog auf Mobile anpassen */
   .sw-detail-hero-wrap {
-    height: 220px;
+    height: 280px;
   }
   .sw-detail-hero-title {
     font-size: 1.25rem;
@@ -1703,8 +1704,8 @@ body:not(.sw-app-fullscreen) footer.footer {
     margin-right: 8px !important;
   }
   .sw-floating-footer {
-    bottom: 8px;
-    right: 8px;
+    bottom: 76px;
+    right: 56px;
     z-index: 1000;
   }
 

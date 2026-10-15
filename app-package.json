@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "sehenswuerdigkeiten",
   "name": "Sehenswürdigkeiten",
-  "app-version": "1.8.13",
+  "app-version": "1.8.14",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -140,8 +140,8 @@
         "typ": "string",
         "laenge": 100
       },
-      "default": "Sehenswürdigkeiten Burladingen",
-      "hilfe": "Titel im schwebenden Banner über der Karte (z. B. 'Sehenswürdigkeiten Burladingen').",
+      "default": "",
+      "hilfe": "Titel im schwebenden Banner über der Karte (z. B. 'Sehenswürdigkeiten Burladingen'); leer = Titel + Ort.",
       "erforderlich": "nein"
     },
     "bannerUntertitel": {
