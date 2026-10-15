@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.15 - 2026-10-15
+- FIX: Kopfzeile bei 360 px ohne Überlauf (Template): Logo- und Burger-Spalte passen sich der Breite an, das Menü-Symbol ragt nicht mehr über den rechten Rand. Keine Änderung an App-Code oder Konfiguration.
+
 ## 1.8.14 - 2026-10-15
 - FIX: Die Liste, Karte und der Katalog zeigen nur noch Ziele innerhalb des eingestellten Umkreises; Ziele, die die DZT-Umkreissuche knapp außerhalb liefert, werden nach der Entfernungsberechnung ausgeblendet („Geladen“ zählt die Ziele im Umkreis, die Abfrage selbst lädt weiterhin höchstens 300 Datensätze).
 - FIX: Links in DZT-Beschreibungen (`[Text](https://…)`) sind klickbar und öffnen in neuem Tab; erlaubt sind nur http(s)-Adressen.
