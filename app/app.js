@@ -891,7 +891,7 @@ function classifyWeatherType(poi) {
   const typeStr = types.join(" ").toLowerCase();
 
   const indoorTypes = [
-    "museum", "artgallery", "church", "placeofworship", "civicstructure", 
+    "museum", "artgallery", "church", "placeofworship",
     "dayspa", "publicswimmingpool", "library", "aquarium"
   ];
   if (indoorTypes.some(t => typeStr.includes(t))) return "indoor";
@@ -2040,7 +2040,7 @@ function updateMapMarkers(state) {
           ${poi.isOutlet ? '<span class="badge" style="background:#c026d3; color:#fff; font-size:0.68rem;">🛍️ Outlet</span>' : ""}
           ${poi.isCulinary ? '<span class="badge" style="background:#b91c1c; color:#fff; font-size:0.68rem;">🍷 Genuss</span>' : ""}
           ${poi.isKidsFriendly ? '<span class="badge bg-warning text-dark" style="font-size:0.68rem;">🧸 Familie</span>' : ""}
-          ${poi.weatherType === "indoor" ? '<span class="badge bg-primary" style="font-size:0.68rem;">🏛️ Indoor</span>' : '<span class="badge bg-success" style="font-size:0.68rem;">🌲 Outdoor</span>'}
+          ${poi.weatherType === "indoor" ? '<span class="badge bg-primary" style="font-size:0.68rem;">🏛️ Indoor</span>' : poi.weatherType === "outdoor" ? '<span class="badge bg-success" style="font-size:0.68rem;">🌲 Outdoor</span>' : ""}
           ${poi.isFree ? '<span class="badge bg-light text-dark border" style="font-size:0.68rem;">🏷️ Kostenlos</span>' : ""}
         </div>
         <button class="btn btn-sm btn-primary w-100 py-1" data-sw-action="open-detail" data-sw-poi-id="${escapeHtml(poi.id)}">
@@ -2161,7 +2161,7 @@ function renderDrawerList(state) {
               ${poi.isOutlet ? '<span class="sw-tag-badge sw-tag-outlet">🛍️ Outlet</span>' : ""}
               ${poi.isCulinary ? '<span class="sw-tag-badge sw-tag-culinary">🍷 Genuss</span>' : ""}
               ${poi.isKidsFriendly ? '<span class="sw-tag-badge sw-tag-kids">🧸 Familie</span>' : ""}
-              ${poi.weatherType === "indoor" ? '<span class="sw-tag-badge sw-tag-indoor">🏛️ Indoor</span>' : '<span class="sw-tag-badge sw-tag-outdoor">🌲 Outdoor</span>'}
+              ${poi.weatherType === "indoor" ? '<span class="sw-tag-badge sw-tag-indoor">🏛️ Indoor</span>' : poi.weatherType === "outdoor" ? '<span class="sw-tag-badge sw-tag-outdoor">🌲 Outdoor</span>' : ""}
               ${poi.isFree ? '<span class="sw-tag-badge sw-tag-free">🏷️ Kostenlos</span>' : ""}
             </div>
           </div>
@@ -2240,7 +2240,7 @@ function renderCatalogGrid(state) {
             ${poi.isOutlet ? '<span class="sw-tag-badge sw-tag-outlet">🛍️ Outlet</span>' : ""}
             ${poi.isCulinary ? '<span class="sw-tag-badge sw-tag-culinary">🍷 Genuss</span>' : ""}
             ${poi.isKidsFriendly ? '<span class="sw-tag-badge sw-tag-kids">🧸 Familie</span>' : ""}
-            ${poi.weatherType === "indoor" ? '<span class="sw-tag-badge sw-tag-indoor">🏛️ Indoor</span>' : '<span class="sw-tag-badge sw-tag-outdoor">🌲 Outdoor</span>'}
+            ${poi.weatherType === "indoor" ? '<span class="sw-tag-badge sw-tag-indoor">🏛️ Indoor</span>' : poi.weatherType === "outdoor" ? '<span class="sw-tag-badge sw-tag-outdoor">🌲 Outdoor</span>' : ""}
             ${poi.isFree ? '<span class="sw-tag-badge sw-tag-free">🏷️ Kostenlos</span>' : ""}
           </div>
           <div class="sw-catalog-actions">
@@ -2313,7 +2313,7 @@ function openDetailModal(state, poiId) {
         ${poi.isOutlet ? '<span class="badge px-2.5 py-1.5 fs-6 fw-semibold" style="background:#c026d3; color:#fff;">🛍️ Outlet & Werksverkauf</span>' : ""}
         ${poi.isCulinary ? '<span class="badge px-2.5 py-1.5 fs-6 fw-semibold" style="background:#b91c1c; color:#fff;">🍷 Genuss & Brauerei/Weingut</span>' : ""}
         ${poi.isKidsFriendly ? '<span class="badge bg-warning text-dark px-2.5 py-1.5 fs-6 fw-semibold">🧸 Kinder- & Familienziel</span>' : ""}
-        ${poi.weatherType === "indoor" ? '<span class="badge bg-primary px-2.5 py-1.5 fs-6 fw-semibold">🏛️ Wetterfest (Indoor)</span>' : '<span class="badge bg-success px-2.5 py-1.5 fs-6 fw-semibold">🌲 Freiluft (Outdoor)</span>'}
+        ${poi.weatherType === "indoor" ? '<span class="badge bg-primary px-2.5 py-1.5 fs-6 fw-semibold">🏛️ Wetterfest (Indoor)</span>' : poi.weatherType === "outdoor" ? '<span class="badge bg-success px-2.5 py-1.5 fs-6 fw-semibold">🌲 Freiluft (Outdoor)</span>' : ""}
         ${poi.isFree ? '<span class="badge bg-light text-dark border px-2.5 py-1.5 fs-6 fw-semibold">🏷️ Kostenloser Eintritt</span>' : ""}
       </div>
 

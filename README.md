@@ -157,6 +157,7 @@ Bei direkten Abrufen erhalten diese Anbieter insbesondere die **IP-Adresse** und
 | `tests/source-config.test.cjs` | Wirksame DZT-Quelle in Abruf und Fehleranzeige; Konsistenz von Paket, lokaler Config und README |
 | `tests/text-format.test.cjs` | Darstellung der DZT-Beschreibungen (Fettdruck statt Markdown-Sternchen, Markdown-Links nur mit http(s), HTML escaped) |
 | `tests/radius-meta.test.cjs` | Umkreisgrenze (kein Ziel jenseits des Radius), Meta-Zeile ohne Ortsname |
+| `tests/weather-type.test.cjs` | Wetter-Einstufung (Indoor/Outdoor/unklar) und Abzeichen der ausgelieferten `app/app.js` |
 | `tests/menu-motion.browser.cjs` | Browserprüfung der Menütransition (separat, Playwright) |
 | `tests/result-scope.browser.cjs` | Browserprüfung des Ergebnisumfangs mit synthetischen 37/61/300 Datensätzen, Desktop und mobil (separat, Playwright) |
 
