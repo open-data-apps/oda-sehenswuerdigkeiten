@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.18 - 2026-10-27
+- FIX: Bäder: Frei- und Naturbäder (Quelltyp `odta:OutdoorPool`) gelten als „Outdoor“ statt „Indoor“, Hallenbäder (`odta:IndoorPool`) bleiben „Indoor“. Der allgemeine Typ `PublicSwimmingPool` allein sagt nichts über Wetterfestigkeit; solche Bäder gelten als „unklar“ (Live-Nachtest 27.10.2026, z. B. Freibad Jungingen, Naturbad Albstadt).
+- FIX: Saunen und Saunalandschaften gelten als „Indoor“, Badeseen als „Outdoor“.
+
 ## 1.8.17 - 2026-10-27
 - FIX: Wetter-Einstufung: Der allgemeine schema.org-Typ `CivicStructure` gilt nicht mehr als „Indoor“. Spielplätze, Parks und andere Außenanlagen mit diesem Zusatztyp sind jetzt „Outdoor“ (Live-Befund 27.10.2026, z. B. Abenteuerspielplatz Lembergstraße).
 - FIX: Orte ohne eindeutige Einstufung tragen kein Indoor-/Outdoor-Abzeichen mehr statt fälschlich „Outdoor“.

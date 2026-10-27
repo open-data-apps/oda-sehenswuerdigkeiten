@@ -25,6 +25,21 @@ test("Eindeutige Innenorte bleiben Indoor, auch mit Zusatztyp", () => {
   assert.equal(c.classifyWeatherType({ "@type": S + "TouristAttraction" }), "hybrid");
 });
 
+const O = "https://odta.io/voc/";
+const BAD = [S + "Place", S + "CivicStructure", S + "PublicSwimmingPool", S + "TouristAttraction"];
+
+test("Bäder: Frei- und Naturbäder (odta:OutdoorPool) sind Outdoor, Hallenbäder (odta:IndoorPool) Indoor (Live-Nachtest 27.10.2026)", () => {
+  assert.equal(c.classifyWeatherType({ "@type": [...BAD, O + "OutdoorPool"] }), "outdoor");
+  assert.equal(c.classifyWeatherType({ "@type": [...BAD, O + "IndoorPool"] }), "indoor");
+  assert.equal(c.classifyWeatherType({ "@type": [...BAD, O + "IndoorPool", O + "OutdoorPool"] }), "indoor");
+});
+
+test("Bäder: ohne Angabe unklar, Sauna-Landschaft Indoor, Badesee Outdoor", () => {
+  assert.equal(c.classifyWeatherType({ "@type": BAD }), "hybrid");
+  assert.equal(c.classifyWeatherType({ "@type": [...BAD, O + "AdventurePool", O + "Sauna", O + "SaunaPark"] }), "indoor");
+  assert.equal(c.classifyWeatherType({ "@type": [...BAD, S + "LakeBodyOfWater"] }), "outdoor");
+});
+
 function katalogHtml(weatherType) {
   const els = {};
   const el = (sel) => (els[sel] = els[sel] || { innerHTML: "", textContent: "" });

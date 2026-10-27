@@ -890,15 +890,17 @@ function classifyWeatherType(poi) {
   const types = Array.isArray(poi["@type"]) ? poi["@type"] : [poi["@type"] || ""];
   const typeStr = types.join(" ").toLowerCase();
 
+  // Bäder: Der allgemeine Typ PublicSwimmingPool steht auch bei Frei- und Naturbädern;
+  // erst odta:IndoorPool bzw. odta:OutdoorPool sagt, ob es wetterfest ist (Live-Nachtest 27.10.2026).
   const indoorTypes = [
     "museum", "artgallery", "church", "placeofworship",
-    "dayspa", "publicswimmingpool", "library", "aquarium"
+    "dayspa", "indoorpool", "sauna", "library", "aquarium"
   ];
   if (indoorTypes.some(t => typeStr.includes(t))) return "indoor";
 
   const outdoorTypes = [
     "park", "landform", "hikingtrail", "trail", "naturereserve", 
-    "campground", "playground", "mountain", "beach"
+    "campground", "playground", "mountain", "beach", "outdoorpool", "lakebodyofwater"
   ];
   if (outdoorTypes.some(t => typeStr.includes(t))) return "outdoor";
 
