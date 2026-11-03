@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.19 - 2026-11-03
+- DOCS: MIT-Lizenz ergänzt: `LICENSE` liegt im Repository und im Lieferpaket (`make zip`), das README hat einen Abschnitt „Lizenz“. Keine Änderung an App-Code oder Konfiguration.
+
 ## 1.8.18 - 2026-10-27
 - FIX: Bäder: Frei- und Naturbäder (Quelltyp `odta:OutdoorPool`) gelten als „Outdoor“ statt „Indoor“, Hallenbäder (`odta:IndoorPool`) bleiben „Indoor“. Der allgemeine Typ `PublicSwimmingPool` allein sagt nichts über Wetterfestigkeit; solche Bäder gelten als „unklar“ (Live-Nachtest 27.10.2026, z. B. Freibad Jungingen, Naturbad Albstadt).
 - FIX: Saunen und Saunalandschaften gelten als „Indoor“, Badeseen als „Outdoor“.
