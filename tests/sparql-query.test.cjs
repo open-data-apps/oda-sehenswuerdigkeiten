@@ -25,6 +25,16 @@ test("mit Koordinaten: Umkreissuche als Unterabfrage vor der Typprüfung", () =>
   assert.doesNotMatch(q, /BOUND\(\?lat\)/);
 });
 
+// 1.8.21: schema:Castle ist im DZT-Graphen leer; Burgen, Schlösser und Ruinen tragen
+// schema:LandmarksOrHistoricalBuildings bzw. odta:CastleOrVilla (SPARQL COUNT 03.11.2026).
+test("Burgen und Baudenkmäler: beide Quelltypen in der Typauswahl", () => {
+  for (const q of [c.buildDztSparqlQuery(48.7406, 9.3108, 25), c.buildDztSparqlQuery("", "", 25)]) {
+    assert.match(q, /^PREFIX odta: <https:\/\/odta\.io\/voc\/>$/m);
+    assert.match(q, /schema:LandmarksOrHistoricalBuildings/);
+    assert.match(q, /odta:CastleOrVilla/);
+  }
+});
+
 test("ohne Koordinaten: unveränderte Typauswahl ohne Unterabfrage", () => {
   const q = c.buildDztSparqlQuery("", "", 25);
   assert.doesNotMatch(q, /SELECT DISTINCT \?s WHERE/);

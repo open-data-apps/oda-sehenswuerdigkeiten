@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an dieser Open Data App werden in dieser Datei dokume
 
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und diese App folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## 1.8.21 - 2026-11-03
+- FIX: Burgen, Schlösser, Ruinen und Baudenkmäler werden jetzt gefunden. Die Abfrage suchte Burgen nur über den Typ `schema:Castle`, den der DZT Knowledge Graph nicht verwendet; dort tragen sie `schema:LandmarksOrHistoricalBuildings` oder `odta:CastleOrVilla`. Vorher erreichte die App nur rund die Hälfte dieser Orte (SPARQL COUNT 03.11.2026: 650 von 1.341 mit Burg-, Schloss- oder Ruine-Namen), vor allem in Harz, Thüringen, Vogtland und Nordhessen (Harz, 25 km: 31 statt 11).
+- CHG: Mit den neuen Typen kommen auch Kirchen, Gedenkstätten und andere Denkmäler dazu. In dichten Regionen reichen die höchstens 300 geladenen Ziele deshalb weniger weit (z. B. Elsterberg, 25 km: bis rund 19 statt 22 km). Die Methodik nennt jetzt Baudenkmäler, Burgen und Schlösser.
+
 ## 1.8.20 - 2026-11-03
 - DOCS: Lizenztexte der mitgelieferten Bibliotheken ergänzt: `app/vendor/THIRD-PARTY-NOTICES.md` nennt Version, Herkunft und Lizenz je Bibliothek, liegt im Lieferpaket (`make zip`) und ist im README-Abschnitt „Lizenz“ verlinkt. Keine Änderung an App-Code oder Konfiguration.
 

@@ -634,6 +634,10 @@ function buildDztSparqlQuery(lat, lng, radiusKm) {
     "schema:Restaurant",
     "schema:Museum",
     "schema:Castle",
+    // 1.8.21: schema:Castle ist im DZT-Graphen leer; Burgen, Schlösser und Ruinen tragen
+    // diese beiden Typen (rund die Hälfte fehlte vorher, SPARQL COUNT 03.11.2026).
+    "schema:LandmarksOrHistoricalBuildings",
+    "odta:CastleOrVilla",
     "schema:DaySpa",
     "schema:Playground",
     "schema:AmusementPark",
@@ -663,6 +667,7 @@ function buildDztSparqlQuery(lat, lng, radiusKm) {
 PREFIX con: <http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <https://schema.org/>
+PREFIX odta: <https://odta.io/voc/>
 
 SELECT ?s 
   (SAMPLE(?nameDe) AS ?name)
